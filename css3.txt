@@ -1,0 +1,98 @@
+		CSS3
+
+ How to ...
+
+ 3 ways to insert CSS
+
+   . external style sheet
+   . internal style sheet
+   . inline style
+
++ external
+
+    <head>
+    <link rel="stylesheet" type="text/css" href="mystyle.css">
+    </head>
+
++ internal
+
+    <head>
+      <style>
+        body {
+            background-color: linen;
+        }
+
+        h1 {
+            color: maroon;
+            margin-left: 40px;
+        } 
+      </style>
+    </head>
+
++ inline
+
+  <h1 style="color:blue;margin-left:30px;">This is a heading.</h1>
+
+
+Cascading order
+
+  1. inline style
+  2. external and internal style
+  3. browser default
+
+Note: The values of the properties are case-insensitive (#ff0000 is the same as #FF0000)
+
+. Para definir  un estilo especial para un elemento especifico, se debe añadir
+  un atributo 'id' al elemento.
+
+	<p id="p01"> I am different </p>
+
+	file.css
+	#p01 {	
+		color : blue;
+	}
+
+. Para definir estilos a un tipo de elementos (class), se añade el atributo 'class' al
+  elemento.
+
+    <p class="error"> I am different </p>
+
+    file.css
+    p.error {
+    	color: red;
+    }
+
+    
+
+    padding: top right bottom left
+           : top-bottom left-right
+
+
+
+  background: url(../images/line-red.png) repeat-x center;
+    center : centra la imagen verticalmente;
+  text-transform: uppercase;
+      cambia a Mayusculas/Minusculas
+    
+  max-width: 90%
+    controla el largo que ocupara el texto
+    para centrar este texto toca con (margin: auto)
+    xq text-align no funciona para este caso.
+    
+  <form>
+      <select required>
+          <option value="" disabled selected hidden>Please Choose...</option> /** FORMA DE HACER EL PLACEHOLDER **/
+          <option value="0">Open when powered (most valves do this)</option>
+          <option value="1">Closed when powered, auto-opens when power is cut</option>
+      </select>
+  </form>
+    
+
+
+  Class :hover
+
+  Def: se usa para controlar las acciones cuando el mouse pasa por un elemento. (No req accion de clic) .
+
+  .logo-Header:hover {
+    color: #0b76a6;         -- El color de la letra cambia a azul
+  }

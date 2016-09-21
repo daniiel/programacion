@@ -1,0 +1,147 @@
+Administracion de servidores
+
+1. logout		cerrar sesion
+2. reboot		reinicar servidor
+3. halt			apagar el pc
+4. sudo			"super user do" el super usuario va hacer algo
+
+
+configuraciones de red para acceso por SSH
+	1. NAT Network access translation. problema es la IP.
+		$ ifconfig
+
+			eth0 	Direc. inct: 10.0.2.15	
+			Esta IP no sirve para hacer conexion via remota
+	2. Cambiar el adaptador a Adaptador puente (brige)
+		La maq virtual se conecta a la misma red en la que se 
+		esta trabajando.
+		$ ifconfig
+
+			eth0 192.168.4.59
+	3. Descargar putty y en la conexion colocar la anterior direccion
+
+5. ifconfig
+6. echo $SHELL		saber la ruta del SHELL (/bin/bash) 
+	
+	+ /bin/bash 	contiene todas las instrucciones que se pueden ejecutar
+					en el sistema (carpeta mas importante!)
+7. pwd				print working directory
+8. clear*			limpiar pantalla
+9. yum install/update	programa de instalacion / actualizacion de programas
+
+Manejo de archivos
+
+9. mkdir
+10. touch
+11. cp
+12. mv
+13. rm
+14. rmdir			borrar carpetas vacias!
+
+Folder
+
+/bin				binary -> ejecutables -> programas . contiene los ejecutables del sistema
+/boot				guarda la informacion de arranque del sistema
+/dev				device. 
+					sda discos duros
+/etc				archivos de configuracion del sistema
+/home				carpetas personales de los usuarios, excepto la del superusuarios
+/lib				librerias
+
+Crontab
+
+* * * * * tar -zcf /path_file/backup-$(date +%Y-%m-%d-%H-%M-%S).tar.gz /home/daniUser
+cada minuto se genera un backup de la carpeta personal
+
+
+Usar phpMyAdmin
+
+1. instalar 
+	$ sudo apt-get install phpmyadmin
+
+2. comprobar que esa funcionando desde el browser
+
+	http://ip_server/phpmyadmin/index.php
+
+
+LAMP
+
+L - LINUX
+A - APACHE
+M - MYSQL
+P - PHP
+
+$ labdscape-sysinfo  saber el estado del servidor	
+
+
+Informacion sobre el sistema
+
+Comando para conoce la memoria de nuestros sistema
+
+1. grep MemTotal /proc/meminfo
+2. cat /proc/version 		determinar la distribucion y version de linux
+3. rpm -q <program>			ver si un programa esta instalado
+	$ rpm -q vsftpd
+4. netstat -ln | grep LISTEN  saber que puertos estan abiertos
+
+Ajustar la configuracion del teclado
+
+1. localectl status			conocer la configuracion del teclado 'keyboard'
+
+	System Locale: LANG=en_US.UTF-8
+		vc keymap: la-latin1
+	   x11 Layout: latam
+	  x11 Variant: deadtilde
+
+Programas
+
+1. vsftpd		Very secure FTP Daemon
+		Nota: En RHEL vsftpd solo permite usuarios anonimos para logearse por defecto
+		para editar esto, basta con modificar el archivo como usuario root
+
+		/etc/vsftpd/vsftpd.conf
+
+		decomentar la option "local_enable=YES"
+
+2. systemctl 		conocer el estado de los servicios
+
+	 $ systemctl status vsftpd
+	 # systemctl start vsftpd     inicia el servicio del ftp (as root)
+
+		vsftpd.service - Vsftpd ftp daemon
+		Loaded: loaded (/usr/lib/systemd/system/vsftpd.service; disabled)
+		Active: active (running) since Thu 2016-03-03 21:08:23 COT; 58min ago
+		Process: 2521 ExecStart=/usr/sbin/vsftpd /etc/vsftpd/vsftpd.conf (code=exited, status=0/SUCCESS)
+		Main PID: 2522 (vsftpd)
+		CGroup: /system.slice/vsftpd.service
+		       └─2522 /usr/sbin/vsftpd /etc/vsftpd/vsftpd.conf
+
+
+3. service <program> start/restart/stop		cambiar el estado de un servicio
+
+		$ service vsftpd start					[opcion1]
+		$ systemctl start vsftpd.service		[opcion2]
+4. /etc/init.d/networking restart			reinicia todos los servicios de red
+
+IPtables comando
+
+Es un sistema de firewall vinculado al kernel de linux, es parte del SO. 
+iptables no es mas que un simple script de shell en el que se van 
+ejecutando las reglas de firewall
+
+. colocar el puerto 20 para q acepte trafico por el firewall
+1. $ iptables -I INPUT -p tcp --dport 20 -j ACCEPT		
+2. $ iptables -I INPUT -p tcp --dport 21 -j ACCEPT		
+
+
+Crear un repositorio local usando el DVD de instalacion
+
+1. su -
+2. mount /dev/cdrom /media			montar el DVD
+3. vi /etc/yum.repo.d/dvd.repo 		crear archivo repositorio
+[dvd]
+name="DVD for RHLE7"
+baseurl=file:///media/
+enabled=1
+gpgcheck=0
+
