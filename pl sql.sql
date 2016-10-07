@@ -429,4 +429,44 @@
 
 
 
+-- --------------------------------------------------------
+--   Usar un Array como una tabla OPERADOR 'TABLE'
+-- --------------------------------------------------------
+-- crear el tipo de dato numberArray
+create TYPE numberArray IS TABLE OF NUMBER ;
+/
+DECLARE
+  scenId_array              NumberArray;
+BEGIN
 
+  select id_mno bulk collect into  scenId_array from mno;
+  
+  for i in 1..scenId_array.count loop
+    dbms_output.put_line(scenId_array(i));
+  end loop;
+  
+  insert into dnl_t2
+   select column_value
+   from table (scenId_array);
+
+END;
+/
+
+-- ------------------------------------------------
+--  Conversiones Implicitas
+-- ------------------------------------------------
+
+-- sumar un caracter a un numero
+select salary, salary + '10' from employees;
+
+-- comparar caracter con uno no numerico
+select first_name from employees where hire_date = '05/02/06';
+
+-- transformacion automatica de formato de fecha '17-JUN-03' to '17/06/03'
+select * from employees where hire_date = '17-JUN-03';
+
+-- ------------------------------------------------
+--  Conversiones Explicitas
+-- ------------------------------------------------
+
+to_char(), to_number(), to_date(), to_timestamp(), ...

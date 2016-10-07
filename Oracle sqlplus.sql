@@ -1,8 +1,12 @@
 ORACLE, SQL*PLUS, PL/SQL 
 
 	@AUTOR 		: DANIEL BUITRAGO
-    @VERSION 	: v.2.2.0
+    @VERSION 	: v.3.2.0
     			< comando , 2da opcion de uso de un comando, cambio de forma >
+
+mostrar todo los comandos de SQL*Plus 
+	
+	SQL> help index;
 
 + Consultas con LIKE
 
@@ -64,6 +68,21 @@ ORACLE, SQL*PLUS, PL/SQL
 
 + agregar una particion a una tabla ya particionadas
  	alter table table_name ADD PARTITION partition_name values ($ID_MNO) TABLESPACE data_aca;
+
++ borrar particion
+    alter table table_name DROP PARTITION partition_name;
+
++ mover de tablespace una particion
+	ALTER TABLE table_name MOVE PARTITION partition_name TABLESPACE data_aca; 
+
++ renombrar particion
+	ALTER TABLE table_name RENAME PARTITION partition_name TO new_partition_name;
+
++ dividir particion
+	ALTER TABLE table_name SLIP PARTITION partition_name INTO (PARTITION p1, PARTITION p2);
+
++ truncar particion
+	ALTER TABLE table_name TRUNCATE PARTITION partition_name;
 
 + Crear SEQUENCE  
 
@@ -199,6 +218,9 @@ ORACLE, SQL*PLUS, PL/SQL
 	OPTIONS (SKIP=1, SILENT=(HEADER, FEEDBACK),ERRORS=10)
 	LOAD DATA 
 	INFILE '/home/datos.csv'
+	INFILE '/home/datos2.csv'
+	...
+	INFILE '/home/datosn.csv'
 	BADFILE '_INFILE_.bad'
 	APPEND INTO TABLE test
 	FIELDS TERMINATED BY "," OPTIONALLY ENCLOSED BY '"'
@@ -325,9 +347,28 @@ ORACLE, SQL*PLUS, PL/SQL
  
  	ALTER TABLE tableName TRUNCATE PARTITION partition;
   
-+ Index
++ Crear un Index
+
+	CREATE INDEX index_name ON table_name (column);
+
+	- Crear una tabla forzando el uso de un indice especifico
+
+	CREATE TABLE a (
+		colmn1 INT PRIMARY KEY USING INDEX (CREATE INDEX index_name ON a (column1))
+	);
+
 
 	DROP INDEX <index_name>;
+
++ Crear SINONIMOS
+  
+   CREATE [PUBLIC] SYNONYM synonym_name FOR object;
+
+   CREATE PULBIC SYNONYM camp_fact FOR campaign_fact;
+
+  - Las sentencias que admiten 'sinonimos' son: 
+  		SELECT, AUDIT, INSERT, NOAUDIT, UPDATE, GRANT, DELETE, REVOKE, EXPLAIN PLAN,
+  		COMMENT y LOCK TABLE.
 
 + Query date
 	
@@ -1397,6 +1438,3 @@ SQL Error: ORA-08102: index key not found, obj# 471147, file 280, block 2482795 
 *Action:   Send trace file to your customer support representative, along
            with information on reproducing the error
 
-
-
- 

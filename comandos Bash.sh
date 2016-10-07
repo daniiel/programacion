@@ -705,7 +705,7 @@ COMMENT
 	-- busca la cadena '070716_4_TYP_15814_24057573768226375' en el directorio actual
 	-- omitiendo diferencias ente mayusculas y minusculas
 	-- Retorna el archivo donde encuentra la cadena y la linea
-	-- archivo : 1F, Linea : 4
+	-- miArchivo:1: Linea : 4
 
 	$ grep -in 070716_4_TYP_15814_24057573768226375 *
 	$ 1F:4:070716_4_typ_15814_24057573768226375,typ_15814_2405757376822 ...
@@ -1231,6 +1231,23 @@ fun_concatenate() {
 
     for i in {1..10};  do  DATE=`date -d "-$i day" +%F` ; echo $DATE  ; ./aca_ota.sh $DATE done
 
+
+    + Sumar enteros a una variable
+
+     A=570000000000
+
+    for i in {1..5}
+    do 
+      B=$((A + i))
+      echo $B
+    done
+
+    - SUMAR ENTEROS
+    
+    num=$((EXPRESION))
+    num=$((num1 + num2))
+    num=$(($num1 + $num2))
+    num=$((num1 + 1 + 2))
    
 + crear un grupo llamado 'aca'
 	groupadd aca
