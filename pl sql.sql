@@ -15,7 +15,7 @@
 
 		The block is not stored in the database.
 
-	  	Nota : un bloque que no es almacenado en la db es llamado 'anonymous block' incluso si tiene un label.
+	  	Nota : un bloque que no es almacenado en la db y es llamado 'anonymous block' incluso si tiene un label.
 	  		   un bloque PL/SQL nombrado (un subprograma) puede ser invocado repetidamete (mas detalle despues)
 	
 	. PL/SQL Input and Output

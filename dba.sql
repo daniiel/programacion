@@ -6,6 +6,8 @@
 -- entrar como dba
 -- connect_user/password@database_name as sysdba
 
+set 
+
 [cmd] sqlplus / as sysdba
 
 SQL> select name from v$database;
@@ -43,6 +45,7 @@ USERNAME 			ACCOUNT_STATUS
 ------------------- ------------------
 HR 					EXPIRED & LOCKED
 
+-- desbloquear usuario
 SQL> alter user hr account unlock;
 
 SQL> select username, account_status from dba_users;
