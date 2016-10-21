@@ -1243,7 +1243,7 @@ fun_concatenate() {
     done
 
     - SUMAR ENTEROS
-    
+
     num=$((EXPRESION))
     num=$((num1 + num2))
     num=$(($num1 + $num2))

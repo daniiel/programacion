@@ -53,6 +53,13 @@ BEGIN
 END;
 /
 
+DECLARE
+  var_num       NUMBER := 5.299999999;
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('valor variable: ' || var_num);
+END;
+/
+
 
 DECLARE
   I_ER734_INIT_DATE   number;
@@ -69,3 +76,105 @@ BEGIN
   
 END;
 /
+
+-- ---------------------------------
+--  OPERADORES
+-- ---------------------------------
+
+  '--'    doble comilla se usa para comentarios inline
+  /* */   comentar multiples lineas
+  ||      operador de concatenacion
+  q'[]'   operador q'', permite usar apostrofes dentro de un literal
+  :=      operador de asignacion ( var := 1;)
+  %       (attibute indicator)
+  <>      operador relacional 'diferente'
+  !=      operador relacional 'diferente'
+  
+-- ---------------------------------
+--   Notas varias
+-- ---------------------------------
+
+1. Los nombres de los elementos de PL/SQL como CONSTANTS, VARIABLES, EXCEPTIONS,
+   CURSORS VARIABLE, SUBPROGRAMS and PACKAGES, tienen una longitud maxima de 30 caracteres
+   y debe iniciar con una letra
+   
+2. Para representar un apostrofe dentro de un string, ud puede escribir 2 comillas simples
+
+    select 'I''m a teacher of PL/SQL and you''re a student' from dual;
+    
+    usando la notación --q'<>'
+    
+    select q'<I'm a teacher of PL/SQL and you're a student>' from dual;
+    select q'[I'm a teacher of PL/SQL and you're a student]' from dual;
+    select q'(I'm a teacher of PL/SQL and you're a student)' from dual;
+
+-- -------------------------------
+--   Atributos TYPE Y ROWTYPE 
+-- -------------------------------
+
+TYPE : Permite declarar una variable, constante a ser el mismo tipo de dato como
+       fue declarada una columna o una variable (sin conocer de que tipo es).
+
+ROWTYPE : proporciona un tipo de registro que representa una fila en una tabla 
+        El registro puede almacenar una fila entera de adtos seleccionada de una tabla
+        o de un cursor.
+        NO hereda constraints.
+        
+Ejemplo 1. referenciando una columna
+
+DECLARE
+  v_salary   employees.salary%TYPE;
+  v_name     employees.first_name%TYPE;
+BEGIN
+  SELECT first_name, salary INTO v_name, v_salary 
+  FROM employees
+  WHERE employee_id = 100;
+  
+  DBMS_OUTPUT.PUT_LINE('The salary of ''' || V_NAME ||''' is ' || v_salary);
+END;
+/
+
+
+Ejemplo 2. Referenciando una variable, las variables upp_name, low_name y init_name
+referencian el tipo de dato de la variable 'name' pero NO heredan su contenido.
+
+DECLARE
+  name            varchar2(45) := 'DaNiel BuiTrago';
+  upp_name        name%TYPE;
+  low_name        name%TYPE;
+  init_name       name%TYPE;
+BEGIN
+  
+  upp_name := UPPER(name);
+  low_name := LOWER(name);
+  init_name := INITCAP(name);  
+  
+  DBMS_OUTPUT.PUT_LINE('Variable : Valor' );
+  DBMS_OUTPUT.PUT_LINE('' );
+  DBMS_OUTPUT.PUT_LINE('name:      ' || name);
+  DBMS_OUTPUT.PUT_LINE('upp_name:  ' || upp_name);
+  DBMS_OUTPUT.PUT_LINE('low_name:  ' || low_name);
+  DBMS_OUTPUT.PUT_LINE('init_name: ' || init_name);
+END;
+/
+
+Ejemplo 3. LO QUE NO SE PUEDE HACER es referenciar una constante, variable no nula
+como en el siguiente caso, q al tratar de ejectar arroja error.
+
+DECLARE 
+  mi_num    CONSTANT varchar2(20) := '40a';
+  var2      mi_num%TYPE;
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('CONSTANT : '|| mi_num );
+END;
+/
+
+DECLARE
+   l_employee   employees%ROWTYPE;
+BEGIN
+   SELECT * INTO l_employee FROM employees
+    WHERE employee_id = 138;
+
+   DBMS_OUTPUT.put_line (l_employee.last_name);
+END; 
+

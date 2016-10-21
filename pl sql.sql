@@ -1,6 +1,6 @@
 
 
-									PL/SQL ORACLE
+					PL/SQL ORACLE
 
 
 	. block is defined by the keywords: 
@@ -47,16 +47,16 @@
 
 
 			SQL> DECLARE -- You can assign values here
-			2 wages NUMBER;
-			3 hours_worked NUMBER := 40;
-			4 hourly_salary NUMBER := 22.50;
-			5 bonus NUMBER := 150;
-			6 country VARCHAR2(128);
-			7 counter NUMBER := 0;
-			8 done BOOLEAN;
-			9 valid_id BOOLEAN;
-			10 emp_rec1 employees%ROWTYPE;
-			11 emp_rec2 employees%ROWTYPE;
+			2 wages 			NUMBER;
+			3 hours_worked 		NUMBER := 40;
+			4 hourly_salary 	NUMBER := 22.50;
+			5 bonus 			NUMBER := 150;
+			6 country 			VARCHAR2(128);
+			7 counter 			NUMBER := 0;
+			8 done 				BOOLEAN;
+			9 valid_id 			BOOLEAN;
+			10 emp_rec1 		employees%ROWTYPE;
+			11 emp_rec2 		employees%ROWTYPE;
 			12 TYPE commissions IS TABLE OF NUMBER INDEX BY PLS_INTEGER;
 			13 comm_tab commissions;
 			14
@@ -171,6 +171,7 @@
 			1. You need not know the exact data type of the last_name.
 			2. If you change the database definition of last_name, the 
 				data type of v_last_name changes accordingly at run time.
+			3. referencing items do not inherit column constraint or default values from database columns.
 
 	  las variables upper_name, lower_name, init_name hereda el tipo de dato y constraint
 	  NOT NULL de la variable name, pero no su valor por defecto, ya que este es nuevamnete asignado
@@ -470,3 +471,211 @@ select * from employees where hire_date = '17-JUN-03';
 -- ------------------------------------------------
 
 to_char(), to_number(), to_date(), to_timestamp(), ...
+
+
+CHAPTER 3 
+
+-- DATA TYPES
+
+Table Categories of predefined PL/SQL Scalar Data Types
+
+
+	Category				Description
+	--------		--------------------------------------------------------------
+	Numeric 		numeric values
+	character 		alphanumeric values 
+	BOOLEAN 		logical values
+	Datetime 		Dates and times 
+	Interval		Time intervals
+
+
+	+ Numeric : let you sotre numeric data, represent quantities
+
+	 	PLS_INTEGER	/ BINARY_INTEGER  signed integer in range -2,147,483,648 
+	 	BINARY_INTEGER
+	 	BINARY_FLOAT	simple precision IEEE 754-format
+	 	BINARY_DOUBLE	doble precision IEEE 754-format
+	 	NUMBER
+
+		
+		. PLS_INTEGER Y BINARY_INTEGER son tipos de datos identicos, PLS_INTEGER almacena
+			enteros con signo. Su rango es -2147483648 to 2147483647, 
+
+			PLS_INTEGER tiene las siguientes ventajas sobre el tipo NUMBER
+
+			 - valores PLS_INTEGER requieren menos espacio.
+			 - operaciones PLS_INTEGER usa hardware arithmetic, asi que las operaciones 
+			   son mas rapidas que operaciones NUMBER, las cuales usan library arithmetic.
+
+		. NUMBER tiene una precision (el numero total de digitos) y una escala (el numero de digitos 
+				a la derecha del punto decimal).
+
+			NUMBER(precision, scale);
+
+			Para la precision, el valor maximo es 38.
+			La scale determina donde ocurre el redondeo.
+
+			Una scale negativa redondeada a la izquierda del punto decimal. Por ejemplo, un valor 
+			de escala -3 redondea (34462 -> 35000)
+
+				Nota: el redondeo siempre se hace de izq a der incluyendo las scala negativas, ademas
+					  si el numero es decimal, con el redondeo se pierde la pate decimal.
+
+					  round(15.193,-1) --> 20 xq la unidad 5 suma 1 a la decena 1 + 1 = 2.
+					  round(15.193,-2) --> 0
+
+				SUBTYPES de NUMBER
+
+					DEC, DECIMAL or NUMBER 		Fixed-point number con precision maxima de 38 
+					INT, INTEGER or SMALLINT	Enteros con maxima precision de 38
+					REAL 		Numeros de punto flotante
+
+	+ Character :  let you store alphanumeric values that represent single characters or string of characters.
+
+		CHAR 		cadena de caracteres de longitud fija
+		VARCHAR2 	cadena de caracteres de longitud variable
+		RAW			binario de longitud variable 
+		NCHAR 		cadena de caracteres nacional de longitud fija
+		NVARCHAR2 	cadena de caracteres nacional de longitud variable
+		LONG 		cadena de caracteres de longitud variable 
+		ROWID 		Identificador de fila fisico, 
+		UROWID 		identificador universal de fila
+
+
+		- CHAR y VARCHAR2 tipos de datos de longitud fija y variable respectivamente. 
+			todos los strings literales tiene tipo de dato CHAR.
+
+			especificando items:
+
+			 . CHAR
+			 . VARCHAR2
+			 . CHAR (10 CHAR)
+			 . VARCHAR2 (32 BYTE)
+
+
+			 comparacion de CHARs, no se tiene en cuenta la longitud de las variables
+
+			 DECLARE
+			 	last_name1 CHAR(5) := 'BELLO';
+			 	last_name2 CHAR(10) := 'BELLO    ';
+			 BEGIN
+			 	IF last_name1 = last_name2 THEN
+			 		DBMS_OUTPUT.PUTLINE('last_name1 || ' is equal to ' || last_name2')
+			 	END IF;
+			 END;
+			 /
+
+			BELLO is equal to BELLO
+			
+			PL/SQL procedure successfully completed.
+
+
+			 comparacion de VARCHAR2s, para que dos variables sean iguales deben tener la misma longitud
+
+			 DECLARE
+			 	last_name1 VARCHAR2(10) := 'DOW';
+			 	last_name2 VARCHAR2(10) := 'DOW    ';
+			 BEGIN
+			 	IF last_name1 = last_name2 THEN
+			 		DBMS_OUTPUT.PUTLINE('last_name1 || ' is equal to ' || last_name2')
+			 	ELSE
+			 		DBMS_OUTPUT.PUTLINE('last_name1 || ' is not equal to ' || last_name2')
+			 	END IF;
+			 END;
+			 /
+
+			DOW is not equal to DOW
+
+
+			DECLARE
+			 	last_name1 VARCHAR2(5) := 'STAUB';
+			 	last_name2 CHAR(10) := 'STAUB'; -- completado con espacios en blanco
+			 BEGIN
+			 	IF last_name1 = last_name2 THEN
+			 		DBMS_OUTPUT.PUTLINE('last_name1 || ' is equal to ' || last_name2')
+			 	ELSE
+			 		DBMS_OUTPUT.PUTLINE('last_name1 || ' is not equal to ' || last_name2')
+			 	END IF;
+			 END;
+			 /
+
+			 STAUB is not equal to STAUB
+
+		- ROWID : internamente cada db tiene un ROWID pseudocolumn. Cada rowId represents la direccion
+				de almacenamiento de una fila. 
+
+			. physical rowid identifica una fila en una tabla ordinaria.
+			. logical rowid identifica una fila en un tabla index-organized
+
+	+ DATE : Se usa para almacenar datetimes. La funcion SYSDATE retorna la fecha y hora actual.
+			 Para comparar fechas iguales, hay que tener en cuenta la porcion de tiempo de la fecha,
+			 para estos casos en que no se quiere tener en cuenta la hora se usa la funcion TRUNC(date_variable).
+
+			 PL/SQL automaticamente convierte valores de caracteres en el formato de fecha por defecto a valores DATE 
+
+			 El valor por defecto del formato esta en el parametro NLS_DATE_FORMAT.
+
+			 	-- Consulta para saber los parametros 'configuraciones' de la base de datos
+				SELECT * FROM v$nls_parameters;
+
+				NLS_DATE_FORMAT: 	DD/MM/RR
+
+				DECLARE 
+				  fecha DATE := '11/06/90';
+				BEGIN 
+				  DBMS_OUTPUT.PUT_LINE('fecha: ' || to_char(fecha,'yyyy-mm-dd HH24:MI:SS'));
+				END;
+				/
+
+				Procedimiento PL/SQL terminado correctamente.
+				fecha: 1990-06-11 00:00:00
+
+			DATE soporta operaciones de '+/-', PL/SQL interpreta los enteros como dias. SYSDATE + 21.
+
+			- TIMESTAMP : extiende de DATE y almacena año, mes, dia, hora, minutos y segundos. SYSTIMESTAMP retorna 
+				la hora y fecha actual con fracciones de segundo.
+
+				TIMESTAMP(precision) 	precision un entero 0..9  por defecto es 6
+
+				la precision refiere a la cantidad de digitos en la parte de segundos.
+
+				NLS_TIMESTAMP_FORMAT	DD/MM/RR HH12:MI:SSXFF AM
+				
+				DECLARE
+				  checkout TIMESTAMP(3);
+				BEGIN
+				  checkout := '11/06/90 04:40:50,154 AM'; -- IMPORTANTE la ',' en fracciones de segundo
+				  DBMS_OUTPUT.PUT_LINE('fecha: ' || TO_CHAR(checkout));
+				END;
+				/
+
+				La diferencia entre DATE y TIMESTAMP esta dada por la precision en la parte de los segundos,
+				siendo TIMESTAMP capas de almacenar fracciones de segundos.
+
+			- TIMESTAMP WITH TIME ZONE : extiende de TIMESTAMP e incluye el desplazamiento de time-zone.
+				El desplazamiento de time-zone es la diferencia (en horas y minutos) entre la hora local y
+				'Coordinated Universal Time' (UTC), anteriormente Greenwich Mean Time (GMT).  La sintaxis es:
+
+					TIMESTAMP(precision) WITH TIME ZONE 
+
+					TZR (time zone region) 
+					The TZD format element is an abbreviation of the time zone region 
+
+					PST (tzd) for US/Pacific (tzr)
+
+					-- consulta los time-zone 
+					SELECT tzname, tzabbrev FROM V$TIMEZONE_NAMES;
+
+			-- DATES AND TIMESTAMP
+			create table table_dt (
+			  c_id NUMBER,
+			  c_dt DATE
+			);
+
+			insert into table_dt values (1,'01-01-03');
+			insert into table_dt values (2, DATE '2003-01-01');
+			insert into table_dt values (3, TIMESTAMP '2003-01-01 00:00:00 US/Pacific');
+			insert into table_dt values (4, TO_DATE('01-JAN-2003','DD-MON-YYYY'));
+
+			ALTER SESSION SET NLS_DATE_FORMAT='DD-MON-YYYY HH24:MI:SS';
+			SELECT * FROM table_dt;
