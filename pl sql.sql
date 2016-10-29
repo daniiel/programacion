@@ -46,76 +46,76 @@
 			3. pasando como un OUT o IN OUT parameter
 
 
-			SQL> DECLARE -- You can assign values here
-			2 wages 			NUMBER;
-			3 hours_worked 		NUMBER := 40;
-			4 hourly_salary 	NUMBER := 22.50;
-			5 bonus 			NUMBER := 150;
-			6 country 			VARCHAR2(128);
-			7 counter 			NUMBER := 0;
-			8 done 				BOOLEAN;
-			9 valid_id 			BOOLEAN;
-			10 emp_rec1 		employees%ROWTYPE;
-			11 emp_rec2 		employees%ROWTYPE;
-			12 TYPE commissions IS TABLE OF NUMBER INDEX BY PLS_INTEGER;
-			13 comm_tab commissions;
-			14
-			15 BEGIN -- You can assign values here too
-			16 	wages := (hours_worked * hourly_salary) + bonus;
-			17	country := 'France';
-			18 	country := UPPER('Canada');
-			19 	done := (counter > 100);
-			20 	valid_id := TRUE;
-			21 	emp_rec1.first_name := 'Antonio';
-			22 	emp_rec1.last_name := 'Ortiz';
-			23 	emp_rec1 := emp_rec2;
-			24 	comm_tab(5) := 20000 * 0.15;
-			25 END;
-			26 /
+			DECLARE -- You can assign values here
+			  wages 				NUMBER;
+			  hours_worked 			NUMBER := 40;
+			  hourly_salary 		NUMBER := 22.50;
+			  bonus 				NUMBER := 150;
+			  country 				VARCHAR2(128);
+			  counter 				NUMBER := 0;
+			  done 					BOOLEAN;
+			  valid_id 				BOOLEAN;
+			  emp_rec1 				employees%ROWTYPE;
+			  emp_rec2 				employees%ROWTYPE;
+			  TYPE commissions IS TABLE OF NUMBER INDEX BY PLS_INTEGER;
+			  comm_tab commissions;
+			
+			 BEGIN -- You can assign values here too
+			 	wages := (hours_worked * hourly_salary) + bonus;
+				country := 'France';
+			 	country := UPPER('Canada');
+			 	done := (counter > 100);
+			 	valid_id := TRUE;
+			 	emp_rec1.first_name := 'Antonio';
+			 	emp_rec1.last_name := 'Ortiz';
+			 	emp_rec1 := emp_rec2;
+			 	comm_tab(5) := 20000 * 0.15;
+			 END;
+			 /
 
 			
 			passes the new_sal variable to a subprogram, and the subprogram updates the variable.
 
 			Example 1–5 Assigning Values to Variables as Parameters of a Subprogram
 
-			SQL> DECLARE
-			2 new_sal NUMBER(8,2);
-			3 emp_id NUMBER(6) := 126;
-			4
-			5 PROCEDURE adjust_salary (
-			6 emp_id NUMBER,
-			7 sal IN OUT NUMBER
-			8 ) IS
-			9 emp_job VARCHAR2(10);
-			10 avg_sal NUMBER(8,2);
-			11 BEGIN
-			12 SELECT job_id INTO emp_job
-			13 FROM employees
-			14 WHERE employee_id = emp_id;
-			15
-			16 SELECT AVG(salary) INTO avg_sal
-			17 FROM employees
-			18 WHERE job_id = emp_job;
-			19
-			20 DBMS_OUTPUT.PUT_LINE ('The average salary for '
-			21 || emp_job || ' employees: ' || TO_CHAR(avg_sal) );
-			25
-			26 sal := (sal + avg_sal)/2;
-			27 END;
-			28
-			29 BEGIN
-			30 SELECT AVG(salary) INTO new_sal
-			31 FROM employees;
-			32
-			33 DBMS_OUTPUT.PUT_LINE ('The average salary for all employees: ' || TO_CHAR(new_sal) );
-			36
-			37 adjust_salary(emp_id, new_sal);
-			38 END;
-			39 /
+			DECLARE
+			  new_sal NUMBER(8,2);
+			  emp_id NUMBER(6) := 126;
+			
+			  PROCEDURE adjust_salary (
+			     emp_id NUMBER,
+			     sal IN OUT NUMBER
+			   ) IS
+			     emp_job VARCHAR2(10);
+			     avg_sal NUMBER(8,2);
+			   BEGIN
+
+			     SELECT job_id INTO emp_job
+			     FROM employees
+			     WHERE employee_id = emp_id;
+			
+			     SELECT AVG(salary) INTO avg_sal
+			 	 FROM employees
+			 	 WHERE job_id = emp_job;
+			
+		 		DBMS_OUTPUT.PUT_LINE ('The average salary for '
+			 	|| emp_job || ' employees: ' || TO_CHAR(avg_sal) );
+			
+			 	sal := (sal + avg_sal)/2;
+			   END;
+			
+			 BEGIN
+			 	SELECT AVG(salary) INTO new_sal FROM employees;
+			
+			 	DBMS_OUTPUT.PUT_LINE ('The average salary for all employees: ' || TO_CHAR(new_sal) );
+		 		adjust_salary(emp_id, new_sal);
+			END;
+			/
+
 			The average salary for all employees: 6461.68
 			The average salary for ST_CLERK employees: 2785
 			PL/SQL procedure successfully completed.
-			SQL>
+			
 
 	+ Declarar PL/SQL CONSTANTS
 
@@ -163,6 +163,16 @@
 		END;
 		/
 
+	+ Inicializar variables en el BODY del procedimiento
+
+		DECLARE 
+		  num_1     NUMBER;
+		BEGIN
+		  num_1 := TO_CHAR(SYSDATE - 5,'YYYYMMDD');
+		  dbms_output.put_line('sysdate: ' || SYSDATE|| '  num_1: '||num_1);
+		END;
+		/
+
 	+ USING %TYPE Provides the data type of a variable or database column
 
 		v_last_name 	employees.last_name%TYPE;
@@ -182,6 +192,7 @@
 			lower_name	name%TYPE := LOWER(name);
 			init_name 	name%TYPE := INITCAP(name);
 		BEGIN
+			NULL;
 		END;
 		/
 
@@ -297,41 +308,41 @@
 
 	. IF - THEN - ELSE , CASE
 
-			DECLARE
-		2 		jobid employees.job_id%TYPE;
-		3 		empid employees.employee_id%TYPE := 115;
-		4 		sal employees.salary%TYPE;
-		5 		sal_raise NUMBER(3,2);
-		6 	BEGIN
-		7 		SELECT job_id, salary INTO jobid, sal
-		8 		FROM employees
-		9 		WHERE employee_id = empid;
-		10
-		11 CASE
-		12 		WHEN jobid = 'PU_CLERK' THEN
-		13 			IF sal < 3000 THEN
-		14 				sal_raise := .12;
-		15 			ELSE
-		16 				sal_raise := .09;
-		17 			END IF;
-		18
-		19 		WHEN jobid = 'SH_CLERK' THEN
-		20 			IF sal < 4000 THEN
-		21 				sal_raise := .11;
-		22 			ELSE
-		23 				sal_raise := .08;
-		24 			END IF;
-		33 ELSE
-		34 		BEGIN
-		35 			DBMS_OUTPUT.PUT_LINE('No raise for this job: ' || jobid);
-		36 		END;
-		37 END CASE;
-		38
-		39 UPDATE employees
-		40 SET salary = salary + salary * sal_raise
-		41 WHERE employee_id = empid;
-		42 END;
-		43 /
+		DECLARE
+		 		jobid employees.job_id%TYPE;
+		 		empid employees.employee_id%TYPE := 115;
+		 		sal employees.salary%TYPE;
+		 		sal_raise NUMBER(3,2);
+		BEGIN
+		 		SELECT job_id, salary INTO jobid, sal
+		 		FROM employees
+		 		WHERE employee_id = empid;
+		
+		 	CASE
+		 		WHEN jobid = 'PU_CLERK' THEN
+		 			IF sal < 3000 THEN
+		 				sal_raise := .12;
+		 			ELSE
+		 				sal_raise := .09;
+		 			END IF;
+		
+		 		WHEN jobid = 'SH_CLERK' THEN
+		 			IF sal < 4000 THEN
+		 				sal_raise := .11;
+		 			ELSE
+		 				sal_raise := .08;
+		 			END IF;
+			ELSE
+			 	BEGIN
+			 		.PUT_LINE('No raise for this job: ' || jobid);
+			 	END;
+			END CASE;
+		
+			UPDATE employees
+			SET salary = salary + salary * sal_raise
+			WHERE employee_id = empid;
+		END;
+		/
 
 	. FOR - LOOP
 
@@ -426,7 +437,6 @@
 			END LOOP;
 		END;
 		/
-
 
 
 
@@ -664,7 +674,14 @@ Table Categories of predefined PL/SQL Scalar Data Types
 					PST (tzd) for US/Pacific (tzr)
 
 					-- consulta los time-zone 
-					SELECT tzname, tzabbrev FROM V$TIMEZONE_NAMES;
+					SELECT * FROM V$TIMEZONE_NAMES;
+
+					Dos valores con  TIMESTAMP WITH TIME ZONE son considerados identicos si representan el mismo
+					instante en UTC.
+
+					'29-AUG-2004 08:00:00 -8:00'
+					'29-AUG-2004 11:00:00 -5:00'
+
 
 			-- DATES AND TIMESTAMP
 			create table table_dt (
@@ -679,3 +696,527 @@ Table Categories of predefined PL/SQL Scalar Data Types
 
 			ALTER SESSION SET NLS_DATE_FORMAT='DD-MON-YYYY HH24:MI:SS';
 			SELECT * FROM table_dt;
+
+	+ Large Object LOB : Referencia objetos grandes que son almacenados separadamente de otros items,
+			tales como texto, graficas, imagenes, video clips. 
+
+
+	+ Definiendo Subtypes 
+
+		DECLARE
+			SUBTYPE birthDate IS DATE NOT NULL;
+			SUBTYPE counter IS NATURAL;
+
+			TYPE nameList IS TABLE OF VARCHAR2(10);
+			SUBTYPE dutyRoster IS nameList;
+
+			TYPE TimeRec IS RECORD (
+				minutes	INTEGER,
+				hours 	INTEGER
+			);
+		BEGIN
+			NULL;
+		END;
+		/
+
+		Subtypes pueden incrementar la confiabilidad para detectar valores fuera de rango, en el siguientes
+		ejemplo se restringe el subtipo 'pinteger' a almacenar enteros en el rango -9..9. cuando el programacion
+		intenta almacenar un numero fuera del rango en una variable pinteger, PL/SQL lanza una excepcion.
+
+		DECLARE
+			v_sqlerrm	VARCHAR2(64);
+
+			SUBTYPE pinteger IS PLS_INTEGER RANGE -9..9;
+			y_axis 		pinteger;
+
+			PROCEDURE p (x IN pinteger) IS
+				BEGIN
+					DBMS_OUTPUT.PUT_LINE(x);
+				END;
+		BEGIN
+			y_axis := 9;
+			p(10);
+		EXCEPTION
+			WHEN OTHERS THEN 
+			  -- Obtiene el mensaje de error
+			  v_sqlerrm := SUBSTR(SQLERRM, 1, 64);
+			  DBMS_OUTPUT.PUT_LINE('Error: '|| v_sqlerrm);
+		END;
+		/
+
+PL/SQL Data type conversion 
+
+  Algunas veces es necesario convertir un valor de un tipo de dato a otro. PL/SQL soporta 
+  explicito e implicita convercion de tipos de datos.
+
+  Para mejor confiabilidad y mantenibilidad, use conversion explicita. La conversion implicita
+  es sensible al contexto y no siempre predecible. Conversion implicita puede ser mas lenta que 
+  la conversion explicita.
+
+
+  Si ud asigna un valor de una variable de un tipo a una columna de otro tipo de dato, PL/SQL
+  convierte el valor de la variable al tipo de dato de la columna. Si PL/SQL no puede determinar
+  cual conversion implicita es necesaria, ud va a obtener un error de compilacion. En tal caso 
+  ud debe usar una conversion Explicita.
+
+
+PL/SQL Control Structures.
+
+  1. Selection 	_>  condicionales IF - ELSE 
+  		Evalua una condicion, entonces ejecuta un conjunto de sentencias enlugar de otras, dependiendo
+  		si la condicion es TRUE o FALSE.
+  2. iteracion	_>  ciclos 	FOR LOOP, WHILE , ..
+  		Ejecuta un conjunto de sentencias repetidamente, tantas veces como la condicion sea TURE.
+  3. Sequencia	_>	procesamiento en serie.
+  		Ejecuta las sentencias en el orden en las que aparecen.
+
+
+  + IF and CASE
+
+  	Hay 3 formas de sentencias IF : IF-THEN, IF-THEN-ELSE y IF-THEN-ELSIF.
+
+  	El CASE es una manera compacta de evaluar un simple condicion y escoger entre muchas alternativas.
+  	tiene sentido usar CASE cuando hay 3 o mas alternativas para escoger.
+
+
+  		IF sales > (quota + 200) THEN
+  			something....
+  		END IF;
+
+  		Si la condicion es FALSE o NULL, la condicion IF no hace nada.
+
+  		IF sales > (quota + 200) THEN
+  			something ...
+  		ELSE
+  			something2 ..
+  		END IF;
+
+  		- IF-THEN-ELSE Anidado
+
+  		IF sales > (quota + 200) THEN
+  			something....
+  		ELSE
+  			IF sales > quota THEN
+  				..
+  			ELSE
+  			    ..
+  			END IF;
+  		END IF;
+
+  		- IF-THEN_ELSIF
+
+  		IF    sales > 5000 THEN
+  			something....
+  		ELSIF sales > 35000 THEN
+  			...
+  		ELSE
+  			...
+  		END IF;
+
+  		- Extendiendo IF_THEN
+
+  			grade := 'B';
+
+  			IF grade = 'A' THEN
+  			  DBMS_OUTPUT.PUT_LINE();
+  			ELSIF grade = 'B' THEN
+  				DBMS_OUTPUT.PUT_LINE();
+  			ELSIF grade = 'C' THEN
+  				DBMS_OUTPUT.PUT_LINE();
+  			ELSIF grade = 'D' THEN
+  				DBMS_OUTPUT.PUT_LINE();
+  			ELSIF grade = 'E' THEN
+  				DBMS_OUTPUT.PUT_LINE();
+  			ELSE 
+  				DBMS_OUTPUT.PUT_LINE();
+  			END IF;
+
+  		- Usando simple CASE statement
+
+  			grade := 'B';
+
+  			CASE grade
+  				WHEN 'A' THEN DBMS_OUTPUT.PUT_LINE();
+  				WHEN 'B' THEN DBMS_OUTPUT.PUT_LINE();
+  				WHEN 'C' THEN DBMS_OUTPUT.PUT_LINE();
+  				WHEN 'D' THEN DBMS_OUTPUT.PUT_LINE();
+  				WHEN 'E' THEN DBMS_OUTPUT.PUT_LINE();
+  				ELSE DBMS_OUTPUT.PUT_LINE();
+  			END CASE;
+  				
+  		La sentencia CASE es mas legible y mas eficiente. Si se omite la clausula ELSE, PL/SQL añade
+  		la clausula implicita :
+
+  			ELSE RAISE CASE_NOT_FOUND;
+
+  		Si la sentencia CASE no hace math con las condiciones WHEN y se omitio la clausula ELSE entonces
+  		pl/SQL lanza la excepcion predefinida CASE_NOT_FOUND;
+
+  		- Usando Searched CASE statement
+
+  			grade := 'B';
+
+  			CASE 
+  				WHEN grade = 'A' THEN DBMS_OUTPUT.PUT_LINE();
+  				WHEN grade = 'B' THEN DBMS_OUTPUT.PUT_LINE();
+  				WHEN grade = 'C' THEN DBMS_OUTPUT.PUT_LINE();
+  				WHEN grade = 'D' THEN DBMS_OUTPUT.PUT_LINE();
+  				WHEN grade = 'E' THEN DBMS_OUTPUT.PUT_LINE();
+  				ELSE DBMS_OUTPUT.PUT_LINE();
+  			END CASE;
+
+  		La condicion de busqueda se encuentra definida en la clausula WHEN, este es logicamente equivalente al
+  		simple CASE statement.
+
+  		- Capturando la excepcion en lugar de definir un ELSE
+
+  		BEGIN
+  			grade := 'B';
+
+  			CASE 
+  				WHEN grade = 'A' THEN DBMS_OUTPUT.PUT_LINE();
+  				WHEN grade = 'B' THEN DBMS_OUTPUT.PUT_LINE();
+  				WHEN grade = 'C' THEN DBMS_OUTPUT.PUT_LINE();
+  				WHEN grade = 'D' THEN DBMS_OUTPUT.PUT_LINE();
+  				WHEN grade = 'E' THEN DBMS_OUTPUT.PUT_LINE();
+  				ELSE DBMS_OUTPUT.PUT_LINE();
+  			END CASE;
+
+  			EXCEPTION
+  				WHEN CASE_NOT_FOUND THEN 
+  					DBMS_OUTPUT.PUT_LINE('No such grade');
+  		END;
+  		/
+
+
+  	Lineamientos para IF y CASE
+
+  	1. evitar sentencias torpes
+
+  		IF new_balance < minimum_balance THEN 
+  			overdrawn := TRUE;
+  		ELSE
+  			overdrawn := FALSE;
+  		END IF;
+
+  		IF overdrawn = TRUE THEN
+  		  RAISE insufficient_funds;
+  		END IF;
+
+  	2. El valor de una expresion booleana puede ser asignada directamente a una variable booleana,
+  		se puede reemplazar la sentencia IF con una simple asignacion.
+
+  		overdrawn := new_balance < minimum_balance
+
+  	3. Una variable booleana es en si TRUE o FALSE, ud puede simplificar la condicion en el IF
+
+  		IF overdrawn THEN ...
+
+  	4. Cuando sea posible use la clausula ELSIF en lugar de IF anidados, el codigo sera mas facil de leer
+
+
+  		IF condition1 THEN statement1;
+			ELSE IF condition2 THEN statement2;
+				ELSE IF condition3 THEN statement3; END IF;
+			END IF;
+		END IF;
+
+		IF condition1 THEN statement1;
+			ELSIF condition2 THEN statement2;
+			ELSIF condition3 THEN statement3;
+		END IF;
+
++ Controlando las iteraciones de los ciclos (LOOP, EXIT, and CONTINUE)
+
+	sentencias loop:
+
+		. Basic LOOP
+		. WHILE LOOP
+		. FOR LOOP
+		. Cursor FOR LOOP
+
+	Para salir de un loop:
+
+		. EXIT
+		. EXIT-WHEN
+
+	Para salir de la iteracion actual de un ciclo:
+
+		. CONTINUE
+		. CONTINUE-WHEN
+
+	Para completar un bloque antes de que llegue a su final normal, use RETURN
+
+	- EXIT statement
+
+		x NUMBER := 0;
+	LOOP
+		X := x +1
+
+		IF x > 3 THEN
+			EXIT;
+		END IF;
+	END LOOP;
+	-- after EXIT, control resumes here
+
+	- EXIT-WHEN
+
+		x NUMBER := 0;
+	LOOP
+		X := x +1
+
+		EXIT WHEN x > 3 ;
+	END LOOP;
+	-- after EXIT, control resumes here
+
+
+	- CONTINUE statement 
+
+		x NUMBER := 0;
+	LOOP     -- after CONTINUE, control resumes here
+		X := x +1
+
+		IF x > 3 THEN
+			CONTINUE;
+		END IF;
+	END LOOP;
+
++ Simple FOR-LOOP
+
+	BEGIN
+		FOR I IN 1..3 LOOP
+			sentencia...
+		END FOR;
+	END;
+	/
+
+	- de atras hacia adelante con REVERSE
+
+	BEGIN
+		FOR I IN REVERSE 1..3 LOOP
+			sentencia...
+		END FOR;
+	END;
+	/
+
+	Los limites de un ciclo pueden ser literales, variables, o expresiones, pero estos deben evaluar a Numeros
+
+		-- limites numericos
+		FOR j IN -5..5 LOOP
+			NULL;
+		END LOOP;
+
+		-- variables numericas
+
+		DECLARE
+		  	first 	INTEGER := 100;
+		  	last 	INTEGER := 120;
+		
+		FOR K IN reverse first..last LOOP
+			NULL;
+		END LOOP;
+
+
+		-- limite literal numerico - expresion numerica
+		FOR STEP IN 0..(TRUNC(first/last)*2) LOOP
+			NULL;
+		END LOOP;
+
+Usando la sentencia NULL
+
+	La sentencia NULL no hace nada excepto pasar el control a la siguiente sentencia. De NULL statement
+	es una practica forma para crear 'placeholder' en un subprograma. Este permite compilar un subprograma
+	y luego completar su cuerpo.
+
+	CREATE OR REPLACE PROCEDURE p (
+		emp_id 	NUMBER,
+		bonus	NUMBER
+	) AS
+
+	BEGIN
+		NULL;	-- placeholder
+	END;
+	/
+
+	Se puede usar el NULL para indicar que se esta consiente de una posibilidad, pero que no es necesaria una accion.
+
+
+	CREATE OR REPLACE FUNCTION f (a INTEGER, b INTEGER)
+	AS
+	BEGIN
+		RETURN (a/b);
+	EXCEPTION
+		WHEN ZERO_DIVIDE THEN
+			ROLLBACK;
+		WHEN OTHERS THEN
+			NULL;
+	END;
+	/
+
+PL/SQL Collections y Records
+
+	En un 'collection', los componentes internos son siempre del mismo tipo de dato, y son llamados elementos.
+	Las listas y arreglos (list and arrays) son ejemplos tipicos de collections.
+
+	En un 'record', los componentes internos pueden ser de diferentes tipos de datos, y son llamados campos.
+	se pueden acceder a cada campo por su nombre. Una variable 'record' puede mantener una fila de tabla o 
+	algunas columnas de una tabla row. cada campo corresponde a una columna de la tabla.
+
+
+	caracteristicas de los tipos de collections.
+
+	-------------------------------------------------------------------------------------------------------------
+	Collections 			Number of 			subscript 			Dense or 				
+	type 					elements 			type 				sparse
+	-------------------------------------------------------------------------------------------------------------
+
+	associative Array 		unbounded 			String or 		 	either
+	(or index-by table) 						Integer
+
+	Nested table 			unbounded 			Integer 			starts dense,
+																	can become sparse
+
+
+	Variable-size array 	bounded 			Integer 			always dense
+
+
+	Unbounded : siginifica que teoricamente, no hay limite del numero de elementos en la coleccion. Actualmente
+		hay limites, pero estos son demasiados altos.
+
+	Dense 	  : significa que la coleccion no tiene huecos entre elementos, cada elemento entre el primero y el
+		ultimo es definido y tiene un valor (puede ser NULL).
+
+	Una coleccion que es creada en un bloque PL/SQL esta disponible solo
+
+	- Associative array (tambien llamado un index-by table) 
+
+		Es un conjunto de pares key-value. Cada key es unica, y es usado para localizar el correspondiente valor.
+		La Key puede ser integer o string.
+
+		Usando un key-value para la primera vez añade un par al arreglo asociado. Usando la misma key con un valor 
+		diferente cambia el valor.
+
+
+		DECLARE
+		-- Associative array indexed by string:
+		 TYPE population IS TABLE OF NUMBER -- Associative array type
+		  INDEX BY VARCHAR2(64);
+		 
+		 city_population    population;     -- Associative array variable
+		 i                  VARCHAR2(64);
+		BEGIN
+
+		 -- Add new elements to associative array:
+		 city_population('Smallville')  := 2000;
+		 city_population('Midland')     := 750000;
+		 city_population('Megalopolis') := 1000000;
+
+		 -- Change value associated with key 'Smallville':
+		 city_population('Smallville')  := 2001;
+
+		 -- Print associative array:
+		 i := city_population.FIRST;
+
+		 WHILE i IS NOT NULL LOOP
+		   DBMS_Output.PUT_LINE  ('Population of ' || i || ' is ' || TO_CHAR(city_population(i)));
+		   i := city_population.NEXT(i);
+		 END LOOP;
+		END;
+		/
+
+
+		Un associative array mantiene un conjunto de datos de un tamaño arbitrario, y se puede acceder
+		a sus elementos sin conocer su posicion en el Array. Un associative array no puede ser manipulado 
+		por sentencias SQL (INSERT y DELETE).
+
+		Un associative array es destinado para almacenar datos temporales. Para hacer un associative 
+		array persistente para la vida de una sesion de base de datos, hay que declara el arreglo en un 
+		package, y asignarle los valores a este elemento en el package body.
+
+		Cuando se declara un associative array que es indexado por strings, el tipo de string in la declaracion
+		debe ser VARCHAR2 o un subtipo de este. Sin embargo los valores de la key pueden ser de cualquier tipo.
+
+	- Nested Tables
+
+		Conceptualmente un nested table es como un array unidimensional con un numero arbitrario de elementos.
+
+		Las diferencias entre un array y una nested table son:
+
+			- Un array tiene un numero maximo de elementos, mientras en la nested table no. El tamaño de esta 
+				puede incrementar dinamicamente.
+			- Un array es dense (siempre tiene todos los elementos seguidos). Una nested table es dense inicialmente
+				pero puede convertirse en sparse, porque se pueden eliminar elementos de este.
+
+
+Definiendo tipos Collections
+
+	Para crear una collection, se define un tipo collection y entonces se declara la variable de este tipo.
+
+	Se crea el tipo de dato con la sentencia CREATE TYPE. Un type creado dentro de un bloque PL/SQL es 
+	disponible solo dentro del bloque.
+
+	Se puede definir una TABLA o VARRAY tipo en la parte de declaraciones de cualquier bloque PL/SQL, subprogram
+	o package usando 'TYPE' definition.
+
+	- declarando Nested tables, varrays y associative array
+		
+		DECLARE
+			TYPE nested_type IS TABLE OF VARCHAR2(30);
+			TYPE varray_type IS VARRAY(5) OF INTEGER;
+			TYPE assoc_array_num_type
+			IS TABLE OF NUMBER INDEX BY PLS_INTEGER;
+			TYPE assoc_array_str_type
+			IS TABLE OF VARCHAR2(32) INDEX BY PLS_INTEGER;
+			TYPE assoc_array_str_type2
+			IS TABLE OF VARCHAR2(32) INDEX BY VARCHAR2(64);
+			v1 nested_type;
+			v2 varray_type;
+			v3 assoc_array_num_type;
+			v4 assoc_array_str_type;
+			v5 assoc_array_str_type2;
+		BEGIN
+			-- an arbitrary number of strings can be inserted v1
+			v1 := nested_type('Shipping','Sales','Finance','Payroll');
+			v2 := varray_type(1, 2, 3, 4, 5); -- Up to 5 integers
+			v3(99) := 10; -- Just start assigning to elements
+			v3(7) := 100; -- Subscripts can be any integer values
+			v4(42) := 'Smith'; -- Just start assigning to elements
+			v4(54) := 'Jones'; -- Subscripts can be any integer values
+			v5('Canada') := 'North America';
+			-- Just start assigning to elements
+			v5('Greece') := 'Europe';
+			-- Subscripts can be string values
+		END;
+		/
+
+		--declaring a procedure parameter as a nested table
+		CREATE PACKAGE personnel AS
+			TYPE staff_list 	IS TABLE OF employees.employee.id%TYPE;
+			PROCEDURE award_bonuses (emp_buenos IN staff_list);
+		END personnel;
+		/
+
+		CREATE PACKAGE BODY personnel AS
+
+			PROCEDURE award_bonuses (emp_buenos staff_list) IS 
+			BEGIN
+				FOR i IN emp_buenos.FIRST..emp_buenos.LAST LOOP
+					UPDATE employees SET salary = salary + 100
+					WHERE employees.employee_id = emp_buenos(i);
+				END LOOP;
+			END;
+		END;
+		/
+
+		Para invocar el procedimiento 'personnel.award_bonuses' desde afuera del package, se debe declarar
+		una variable de tipo 'personnel.staff_list' y pasar la variable como el parametro.
+
+
+		-- invocando el procedimiento pasandole como parametro una nested table
+		DECLARE
+			good_emp 	personnel.staff_list;
+		BEGIN
+			good_emp := personnel.staff_list(100, 104, 108);
+			personnel.award_bonuses (good_emp);
+		END;
+		/

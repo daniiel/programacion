@@ -515,7 +515,7 @@ PARTITION seg_cmo values (3)
 
 -- Configuraciones Sqlplus*
 
-!IMPORTAT!
+!IMPORTANTE!
 set trimspool on Ayuda a que la consulta no quede con espacios al final.
   ej .:
   .sin :  set trimspool on
@@ -1438,3 +1438,39 @@ SQL Error: ORA-08102: index key not found, obj# 471147, file 280, block 2482795 
 *Action:   Send trace file to your customer support representative, along
            with information on reproducing the error
 
+
+
+ + Salir de un procedimiento con la clausula RETURN
+
+    DECLARE
+	  employee_rec employees%ROWTYPE;
+	BEGIN
+	  BEGIN
+	    SELECT * INTO employee_rec FROM employees WHERE employee_id = 0;
+	  EXCEPTION
+	  WHEN NO_DATA_FOUND THEN
+	    dbms_output.put_line('in the exception');
+	    RETURN;
+	  END;
+	  dbms_output.put_line('after exception');
+	END;
+	/
+
+
+	+ Configurar el SERVEROUTPUT by default?
+
+	Open a new worksheet.
+
+	Code this line
+
+	SET SERVEROUTPUT ON
+	
+	Save to ‘startup.sql’
+
+	Open Tools – Preferences
+
+	Go to the Database page
+
+	On the ‘Filename for connection startup script’ – point to the ‘startup.sql’ file you just created.
+
+	Restart SQL Developer.
