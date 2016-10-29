@@ -60,7 +60,14 @@ END;
 -- 5. Que valor se imprime?
 -- a. 1234567.1234    b. 1234567.1235   c. error
 
-  
+
+select 'Smiths'' from dual;
+
+-- 6. El resultado de la consulta es?
+-- a. Smiths'   b. Smiths   c. error
+
+
+
 
 
 
