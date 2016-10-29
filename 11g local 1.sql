@@ -38,7 +38,6 @@ Bloque PL/SQL : Unidad de estructura basica en los programas PL/SQL.
       Supone una mejora de rendimiento enviar todo en un bloque, que 
       sentencia por sentencia.
     
-
 -- ---------------------------------
 --  BLOQUE BEGIN-END
 -- ---------------------------------
@@ -158,13 +157,14 @@ BEGIN
 END;
 /
 
-Ejemplo 3. LO QUE NO SE PUEDE HACER es referenciar una constante, variable no nula
+Ejemplo 3. Lo que NO SE PUEDE HACER es referenciar una constante, variable no nula
 como en el siguiente caso, q al tratar de ejectar arroja error.
 
 DECLARE 
   mi_num    CONSTANT varchar2(20) := '40a';
-  var2      mi_num%TYPE;
+  -- var2      mi_num%TYPE;
 BEGIN
+  mi_num := 'dasdasdadasd';
   DBMS_OUTPUT.PUT_LINE('CONSTANT : '|| mi_num );
 END;
 /
@@ -177,4 +177,40 @@ BEGIN
 
    DBMS_OUTPUT.put_line (l_employee.last_name);
 END; 
+/
+
+
+-- ----------------------------------------
+--  EXCEPTIONS
+-- ----------------------------------------
+
+
+DECLARE
+  var1    VARCHAR2(60);
+  
+BEGIN
+  SELECT last_name into var1 FROM employees WHERE employee_id = 99;
+  dbms_output.put_line('LAST NAME: '|| var1);
+END;
+/
+
+
+-- La clausula UPDATE no genera una exception cuando no encuentra datos,
+-- mientras el SELECT si.
+BEGIN
+  UPDATE employees set last_name = 'daniel'  WHERE employee_id = 99;
+EXCEPTION
+  WHEN NO_DATA_FOUND THEN 
+    dbms_output.put_line('Excepcion capturada! '); -- Nunca se va a ejecutar
+END;
+
+
+BEGIN
+  UPDATE employees set last_name = 'daniel'  WHERE employee_id = 99;
+  IF SQL%ROWCOUNT = 0 THEN
+    dbms_output.put_line('Excepcion capturada! '); 
+  END IF;
+END;
+/
+
 
