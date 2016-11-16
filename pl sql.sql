@@ -438,6 +438,15 @@
 		END;
 		/
 
+		-- invocando un procedimiento almacenado, la variable someone es de tipo mno%ROWTYPE 
+		-- el procedimiento se invoca sin usar 'call/exec'
+		begin
+		  FOR someone IN (select distinct mno_id from mno) LOOP
+		      --dbms_output.put_line(someone.mno_id);
+		      print_ln(someone.mno_id);
+		  END LOOP;
+		end;
+		/
 
 
 -- --------------------------------------------------------
@@ -1220,3 +1229,35 @@ Definiendo tipos Collections
 			personnel.award_bonuses (good_emp);
 		END;
 		/
+
+		
+	+ Asignando valores a VARRAYs con tipos de datos complejos
+
+	DECLARE
+		TYPE emp_name_rec is RECORD (
+			firstname 		employees.first_name%TYPE;
+			lastname 		employees.last_name%TYPE;
+			hiredate 		employees.hire_date%TYPE;
+		);
+
+		-- Array type that can hold information 10 employees
+		TYPE EmpList_arr IS VARRAY(10) OF emp_name_rec;
+		seniorSalespeople EmpList_arr;
+
+		-- Declare a cursor to select a subset of columns
+		CURSOR c1 IS 
+			SELECT first_name, last_name, hire_date
+			FROM employees;
+
+		TYPE NameSet IS TABLE OF c1%ROWTYPE;
+		seniorTen 			NameSet;
+		EndCounter			NUMBER := 10;
+
+	BEGIN
+		seniorSalespeople := EmpList_arr();
+		SELECT 
+	END;
+	/
+
+
+

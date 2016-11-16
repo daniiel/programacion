@@ -1529,3 +1529,9 @@ Sort --temporary-directory=DIR archivo -> donde DIR sera la partición con mayor
 		.  -a : modificar timestamp de acceso
 		.  -m : modificar timestamp de modificacion
 
+Check with netstat -ntlp | grep :8009 to see what process is using 8009 already.
+
+jmap -histo:live PID
+
+Con esto podrán obtener un histograma con la cantidad de memoria en detalle que consume cada una de las class del proceso y el total de memoria consumida por el procesos 
+PID es el número del proceso que requieren validar
