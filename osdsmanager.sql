@@ -2,19 +2,10 @@
 -- unidades de medicion, columnas de tiempo (in microseconds)
 -- hours = microseconds ÷ 3,600,000,000
 SELECT * FROM
-(SELECT
-    sql_fulltext,
-    sql_id,
-    sharable_mem,
-    CPU_TIME,
-    elapsed_time,
-    child_number,
-    disk_reads,
-    executions,
-    first_load_time,
-    last_load_time
-FROM    v$sql
-ORDER BY elapsed_time DESC)
+(SELECT  sql_fulltext, sql_id, sharable_mem, CPU_TIME, elapsed_time, child_number, disk_reads, 
+    executions, first_load_time, last_load_time 
+  FROM    v$sql
+  ORDER BY elapsed_time DESC)
 WHERE ROWNUM < 11;
 
 -- consulta de uso tablespace 
@@ -38,21 +29,10 @@ from v$session
 group by program 
 order by Numero_Sesiones desc;
 
---  !* Usuarios que estan creando bloqueos
-SELECT Session_Id, Lock_Type, Mode_Held
-FROM Dba_Locks
-WHERE Blocking_Others = 'Blocking';
-
-
-
--- consultas que se estan ejecutando v2
-SELECT O.OBJECT_NAME, S.SID, S.SERIAL#, P.SPID, S.PROGRAM,S.USERNAME,
-S.MACHINE, S.LOGON_TIME,SQ.SQL_FULLTEXT 
-FROM V$LOCKED_OBJECT L, DBA_OBJECTS O, V$SESSION S, 
-V$PROCESS P, V$SQL SQ 
-WHERE L.OBJECT_ID = O.OBJECT_ID 
-AND L.SESSION_ID = S.SID AND S.PADDR = P.ADDR 
-AND S.SQL_ADDRESS = SQ.ADDRESS order by SID;
+--1. consultas que se estan ejecutando 
+select SID, s.SERIAL#, SPID, a.sql_text 
+from v$session s, v$process p, v$sqlarea a 
+where s.paddr=p.addr and s.sql_id=a.sql_id;
 
 -- encontrar sessiones de bloqueo 
 SELECT s.blocking_session, s.sid, 
@@ -60,21 +40,16 @@ SELECT s.blocking_session, s.sid,
 FROM v$session s
 WHERE blocking_session IS NOT NULL;
 
---1. consultas que se estan ejecutando (Usar esta!)
-select SID, s.SERIAL#, SPID, a.sql_text 
-from v$session s, v$process p, v$sqlarea a 
-where s.paddr=p.addr and s.sql_id=a.sql_id;
-
 --2. query para encontrar quien bloquea a quien:
 SELECT s1.username || '@' || s1.machine
 || ' ( SID=' || s1.SID || ' ) is blocking '
 || s2.username || '@' || s2.machine || ' ( SID=' || s2.SID || ' ) ' AS blocking_status
 FROM v$lock l1, v$session s1, v$lock l2, v$session s2
-WHERE s1.SID=l1.SID AND s2.SID=l2.SID
-AND l1.BLOCK=1 AND l2.request > 0
-AND l1.id1 = l2.id1
-AND l1.id2 = l2.id2 order by 1;
-
+WHERE s1.SID = l1.SID AND s2.SID = l2.SID
+  AND l1.BLOCK = 1 AND l2.request > 0
+  AND l1.id1 = l2.id1
+  AND l1.id2 = l2.id2 
+ORDER BY 1;
 
 --3. Conocer el SQL que esta ejecutando un determinado SID
 SELECT a.sid, a.serial#, b.sql_text
@@ -83,17 +58,20 @@ FROM v$session a,
 WHERE a.sql_address = b.address
 AND sid             = 1014;
 
---    
+
+-- Conocer los parametros de 
+SELECT table_name, ini_trans, max_trans 
+FROM dba_tables
+WHERE table_name    = 'MSISDN_TARGET'
+  AND owner         = 'ACAADMIN';
+  
+-- * Actualizar INIT y MAX_TRANS
+alter table ACAADMIN.MSISDN_TARGET INITRANS 20 MAXTRANS 255;
+
+-- Parametros de configuracion de la base   
 SELECT * FROM V$NLS_PARAMETERS;
 
 -- consultas activas en este momento
-select S.USERNAME, s.sid, s.osuser, t.sql_id, sql_text
-from v$sqltext_with_newlines t,V$SESSION s
-where t.address =s.sql_address
-and t.hash_value = s.sql_hash_value
-and s.status = 'ACTIVE'
-and s.username <> 'SYSTEM'
-order by s.sid,t.piece;
  select
   object_name, 
   object_type, 
@@ -134,49 +112,12 @@ and sql_id is not null;
 select username, account_status from dba_users;
 
 
-SELECT c.owner,
-  c.object_name,
-  c.object_type,
-  b.sid,
-  b.serial#,
-  b.status,
-  b.osuser,
-  b.machine
-FROM v$locked_object a ,
-  v$session b,
-  dba_objects c
-WHERE b.sid     = a.session_id
-AND a.object_id = c.object_id;
-
-
-
 SELECT sys_context('USERENV','SID') FROM dual;
 
 select a.session_id,a.oracle_username, a.os_user_name, b.owner "OBJECT OWNER", b.object_name,b.object_type,a.locked_mode from 
 (select object_id, SESSION_ID, ORACLE_USERNAME, OS_USER_NAME, LOCKED_MODE from v$locked_object) a, 
 (select object_id, owner, object_name,object_type from dba_objects) b
 where a.object_id=b.object_id;  
-
-
--- Saber los SID que estan generando bloqueos
-SELECT s1.username || '@' || s1.machine
-    || ' ( SID=' || s1.SID || ' ) is blocking '
-    || s2.username || '@' || s2.machine || ' ( SID=' || s2.SID || ' ) ' AS blocking_status
-    FROM v$lock l1, v$session s1, v$lock l2, v$session s2
-    WHERE s1.SID=l1.SID AND s2.SID=l2.SID
-    AND l1.BLOCK=1 AND l2.request > 0
-    AND l1.id1 = l2.id1
-    AND l1.id2 = l2.id2 order by 1;
-    
-    
--- Conocer el SQL que esta ejecutando un determinado SID
-SELECT a.sid,
-  a.serial#,
-  b.sql_text
-FROM v$session a,
-  v$sqlarea b
-WHERE a.sql_address = b.address
-AND sid             = 1014;
 
 -- Kill sessions  'sid,serial#'
 execute sys.kill_osds_session(485, 3554);
@@ -197,7 +138,6 @@ Where     s.paddr = p.addr
 order      by to_number(p.spid);
 /
 
-
 column sql_text format a90
 -- a90 -> significa alphanumeric 
 
@@ -210,14 +150,5 @@ AND sesion.sql_address      = sqltext.address
 AND sesion.username        IS NOT NULL
 ORDER BY sqltext.piece;
 
-execute sys.kill_osds_session(SID,SERIAL#); 
-execute sys.kill_osds_session(787,49290);
-
-select count(1) from (
-select SID, s.SERIAL#, SPID, a.sql_text 
-from v$session s, v$process p, v$sqlarea a 
-where s.paddr=p.addr and s.sql_id=a.sql_id);
-/
-
 -- Ver la ruta donde se encuentra el alert.log file
-show parameter BACKGROUND_DUMP_DEST
+show parameter BACKGROUND_DUMP_DEST;
