@@ -1,3 +1,11 @@
+--5. refleja el progreso de las 20 operaciones mas demoradas:
+select * 
+from (
+  select elapsed_seconds, message 
+  from v$session_longops 
+  order by elapsed_seconds desc) 
+where rownum < 20;
+
 -- TOP SQL, sentencias que mas consumen recursos
 -- unidades de medicion, columnas de tiempo (in microseconds)
 -- hours = microseconds ÷ 3,600,000,000
@@ -51,7 +59,7 @@ ORDER BY 1;
 SELECT a.sid, a.serial#, b.sql_text
 FROM v$session a, v$sqlarea b
 WHERE a.sql_address = b.address
-AND sid             = 1014;
+AND sid             = 201;
 
 --4. Kill sessions  'sid,serial#'
 execute sys.kill_osds_session(485, 3554);
@@ -61,19 +69,19 @@ execute sys.kill_osds_session(485, 3554);
 SELECT * FROM dba_waiters;
 
 -- enq: TX - row lock contention
-select w.event,count(9)
+select w.event, count(1)
 from gv$session s, gv$session_wait w
-where s.sid=w.sid
+where s.sid = w.sid
 group by w.event
 order by 2;
 
 -- identificar usuarios, programas y a q tablas intentan acceder las sessiones
 -- que tienen lock 'enq: TX - row lock contention'
-SELECT object_name,   b.username, b.program, count(9)
+SELECT object_name, b.username, b.program, count(1)
 from v$session b, dba_objects o
-where o.object_id=ROW_WAIT_OBJ#
-and event = 'enq: TX - row lock contention'
-group by object_name,  b.username, b.program, ROW_WAIT_FILE#,ROW_WAIT_BLOCK#,ROW_WAIT_ROW#
+where o.object_id = ROW_WAIT_OBJ#
+and   event       = 'enq: TX - row lock contention'
+group by object_name,  b.username, b.program, ROW_WAIT_FILE#, ROW_WAIT_BLOCK#, ROW_WAIT_ROW#
 order by 4;
 
 -- Conocer los parametros de INI_TRANS y MAX_TRANS
@@ -81,6 +89,20 @@ SELECT table_name, ini_trans, max_trans
 FROM dba_tables
 WHERE table_name    = 'MSISDN_TARGET'
   AND owner         = 'ACAADMIN';
+  
+-- Sample query (query de ejemplo) to find unindexed foreign key constraints
+SELECT * 
+FROM (
+  SELECT c.table_name, cc.column_name, cc.position column_position
+  FROM   user_constraints c, user_cons_columns cc
+  WHERE  c.constraint_name = cc.constraint_name
+  AND    c.constraint_type = 'R'
+  MINUS
+  SELECT i.table_name, ic.column_name, ic.column_position
+  FROM   user_indexes i, user_ind_columns ic
+  WHERE  i.index_name = ic.index_name
+  )
+ORDER BY table_name, column_position;
   
 -- Actualizar INIT y MAX_TRANS
 alter table ACAADMIN.MSISDN_TARGET INITRANS 20 MAXTRANS 255;
@@ -131,3 +153,28 @@ column sql_text format a90
 
 -- Ver la ruta donde se encuentra el alert.log file
 show parameter BACKGROUND_DUMP_DEST;
+
+
+-- ORA-08102: index key not found, obj# 471147, file 280, block 2482795 (2)
+--1. conocer el objecto que esta fallando.
+select object_name, object_type
+from dba_objects
+where object_id = 471147;
+
+SELECT ind.owner,
+  ind.tablespace_name tbs,
+  ind.index_name,
+  ind.status,
+  ind.table_owner,
+  col.column_name,
+  col.descend
+FROM dba_indexes ind,
+  dba_ind_columns col
+WHERE ind.index_name = col.index_name
+AND ind.owner        = col.index_owner
+AND ind.table_name   = upper ('&table_name')
+ORDER BY ind.owner,
+  ind.table_owner,
+  ind.table_name,
+  ind.index_name,
+  col.column_position

@@ -1,0 +1,172 @@
+	JavaScript
+
+		Tipos de datos
+
+	6 primitivos, 1 tipo Object 
+
+	Object: is a collection of name/value pairs
+
+	Primitive type: represents a single, inmutable value (inmutable means once it's set, once that value is set it cannot be changed)
+
+		1. Boolean true/false
+		2. Undefined : no value has ever been set
+		3. Null : lack value
+		4. Number dobule-precision 64-bit
+		5. String
+		6. Symbol : is new to ES6
+
+	+ Operaciones Matematicas
+
+		console.log((5+4)/3);
+		-> 3
+
+		console.log(undefined / 5);
+		-> NaN (Not a number)
+
+	+ Operaciones de igualdad
+
+		var x = 4, y = 4;
+		if (x==y) {
+			console.log("true")
+		}
+		-> true
+
+		x = "4"
+		if (x == y) {
+			console.log(x='4' is equal to y=4);
+		}
+		-> x='4' is equal to y=4
+		Nota: JavaScript converts one of the types to be the same type
+				as the other variable and only compares the values.
+
+		// Strict equality
+		if (x === y) {
+			console.log("is equals");
+		} else {
+			console.log("is not strict equals");
+		}
+		-> is not strict equals
+
+	+ Evaluacion del condicional IF evalua false
+
+		// ALL FALSE
+
+		if (false || null || "" || undefined || 0 || NaN) {
+			console.log("true");
+		} else {
+			console.log("all false");
+		}
+		-> all false
+
+		Si se quiere comprobar si algun valor evalua a false / true se puede hacer desde una consola
+		JavaScript colocando Boolean(<value>);
+
+		> Boolean(null);
+		-> false
+		> Boolean("");
+		-> false
+
+		// ALL TRUE
+
+		if (true && "hello" && 1 && -1 && "false") {
+			console.log("all true");
+		}
+		-> all true
+
+	+ Crear un objecto con la palabra reservada new Object()
+
+	var company = new Object();
+	company.name = "fb";
+	console.loge(company);
+
+	->Object {name: "fb"}
+
+	En JavaScript las propiedades del objecto sino estan definidas automaticamente JavaScript en la asignacion la crea.
+
+	
+	+ Immediately Invoked Function Expressions (IIFEs)
+
+	var a = function () {
+		console.log("hello");
+	}
+
+	a();
+
+	//transformada a un IIFE seria asi:
+
+	(funtion () {
+		console.log("hello");	
+	})();
+
+
+	(funtion (name) {
+		console.log("hello " + name);	
+	})("Coursera!");
+
+
+ + DOM manipulation
+
+ The DOM obejct containt the enteri HTML page/code
+
+
+ To get an element of the page you can use the following statement:
+
+ 	document.getElementById("<#id>");
+
+ 	document.getElementById("title");
+ 	-> <h1 id="title">Hello</h1>
+ 	
+
+ Handler events
+
+ event handlers are basically functions that you bind (enlazar) using specific methods to certain events that happen in the browser.
+
+ 	button onClick=""
+ 	on..<event>=""
+ 	onBlur : ejecutece cuando se pierda el foco del objecto
+
+- Eliminar los eventos en el codigo HTML y pasarlos a JavaScript
+
+ HTML debe contener la estructura como tal, entonces no es recomendable poner toda la logica en este como los "onClick" 
+ para esto se pasa la logica a los .js
+
+ <button onClick="sayHello();">say it!<button
+
+ puede ser reemplazado por :
+
+ // unobstrusive event binding
+ // opcion 1
+ document.querySelector("button")
+ 	.addEventListener("click",sayHello);
+
+ // opcion 2
+ document.querySelector(button)
+ 	.onClick = sayHello; 
+
+- Resolver el problema de que el javaScript sea invocado en cualquier lugar del HTML
+
+Para que no hayan problemas con que las funciones o los elementos no esten definidos xq se 
+incluyo un js.js al comienzo del HTML se pueden definir todas nuestras funciones y eventos 
+dentro de una funcion que espera a q todos los elementos de la pagina HTML hayan sido creados
+
+// En el script.js
+
+document.addEventListener("DOMContentLoaded", 
+	function (event) {
+		// AQUI VAN LAS FUNCIONES ..
+	}
+);
+
+
+EJEMPLO:
+
+document.addEventListener("DOMContentLoaded", 
+	function (event) {
+		function sayHello(event) {
+			...
+		}
+
+		document.querySelector("button")
+			.addEventListener("click",sayHello);
+	}
+);

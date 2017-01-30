@@ -120,8 +120,7 @@ PROGRAMACION EN BASH
 		-r fichero existe y podemos leerlo
 		-e fichero existe
 		-f fichero existe y es un fichero regular
-			para implementarlo, lo mejor es con la negacion ya que  "if [ -f $var ] ..."
-			si la variable es vacia, igual evalua TRUE.
+			para implementarlo, lo mejor es con la negacion ya que  
 			"if [ ! -f $var ] .. " si no existe el archivo entonces ..
 		-h, -L fichero existe y es un enlace simbolico
 		-d directorio existe
@@ -722,8 +721,8 @@ COMMENT
 	grep -rl "name"
 	
 	variaciones
-	 r la busqueda sea recursiva
-	 l muestra el archivo donde la encontro y no la linea
+	 r la busqueda sea recursiva (busca dentro de los folder del directorio actual)
+	 n muestra el archivo donde la encontro y no la linea
 
 	 $ cat file
 	 gato 
@@ -1535,3 +1534,39 @@ jmap -histo:live PID
 
 Con esto podrán obtener un histograma con la cantidad de memoria en detalle que consume cada una de las class del proceso y el total de memoria consumida por el procesos 
 PID es el número del proceso que requieren validar
+
+
+Checkear si un puerto esta arriba
+Validar si un servidor esta disponible (system is reachable)
+
+	Single port:
+
+	nc -zv 127.0.0.1 80
+	Multiple ports:
+
+	nc -zv 127.0.0.1 22 80 8080
+	Range of ports:
+
+	nc -zv 127.0.0.1 20-30
+
+
+	Netcat is a useful tool:
+
+	nc 127.0.0.1 123 &> /dev/null; echo $?
+
+	Will output 0 if port 123 is open, and 1 if it's closed.
+
+	#!/bin/bash
+
+	wget -q --spider http://google.com
+
+	if [ $? -eq 0 ]; then
+	    echo "Online"
+	else
+	    echo "Offline"
+	fi
+
+	-q : Silence mode
+	--spider : don't get, just check page availability
+	$? : shell return code
+	0 : shell "All OK" code
