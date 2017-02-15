@@ -1261,3 +1261,27 @@ Definiendo tipos Collections
 
 
 
+-- ----------------------------------------------------
+--  Crear ARRAYs and LOOP
+-- ----------------------------------------------------
+
+SET SERVEROUTPUT ON;
+DECLARE
+  TYPE servId_list IS TABLE OF service.id_service%TYPE; -- definir un arreglo de tipo id_service
+  serv_ids   servId_list;                               -- Creando una variable de tipo servId_List
+  sname     service.commercial_name%TYPE;
+BEGIN
+  serv_ids := servId_list(372, 377, 395);
+  
+  FOR i IN serv_ids.FIRST..serv_ids.LAST LOOP
+  
+    SELECT commercial_name INTO sname
+    FROM service
+    WHERE id_service = serv_ids(i);
+    
+    DBMS_OUTPUT.PUT_LINE (to_char(serv_ids(i)) || ' : ' || sname);
+    
+  END LOOP;
+
+END;
+/
