@@ -156,3 +156,10 @@ netstat -nap 	saber el puerto y que preceso lo esta ocupando
 
 
 numero de orange 18098457482
+
+
+
+Servidor node
+=========================================================
+
+[cmd] browser-sync start --server --directory --files "**/*"
