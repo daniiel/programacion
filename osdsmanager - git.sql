@@ -46,23 +46,22 @@ order by 4;
 
 --2. query para encontrar quien bloquea a quien:
 SELECT s1.username || '@' || s1.machine
-|| ' ( SID = ' || s1.SID || ' ) is blocking '
-|| s2.username || '@' || s2.machine || ' ( SID = ' || s2.SID || ' ) ' AS blocking_status
+  || ' ( SID = ' || s1.SID || ' ) is blocking '
+  || s2.username || '@' || s2.machine || ' ( SID = ' || s2.SID || ' ) ' AS blocking_status
 FROM v$lock l1, v$session s1, v$lock l2, v$session s2
 WHERE s1.SID = l1.SID AND s2.SID = l2.SID
   AND l1.BLOCK = 1 AND l2.request > 0
-  AND l1.id1 = l2.id1
-  AND l1.id2 = l2.id2 
+  AND l1.id1 = l2.id1 AND l1.id2 = l2.id2 
 ORDER BY 1;
 
 --3. Conocer la sentencia que esta ejecutando un determinado SID
 SELECT a.sid, a.serial#, b.sql_text
 FROM v$session a, v$sqlarea b
 WHERE a.sql_address = b.address
-AND sid             = 201;
+AND sid             = 2132;
 
 --4. Kill sessions  'sid,serial#'
-execute sys.kill_osds_session(485, 3554);
+execute sys.kill_osds_session(2756, 23709);
 
 -- la sesion (Waiting_session) esta esperando a que la session (holding_session)
 -- libere algun recurso

@@ -139,7 +139,9 @@ EOF`
 
 $ echo $BL_ID_LIST
 40043
+
 $ if [ "$BL_ID_LIST" == "40043" ]; then echo "igual"; fi
+$
 $ BL_ID_LIST=`echo -n $BL_ID_LIST`
 
 $ if [ "$BL_ID_LIST" == "40043" ]; then echo "igual"; fi
@@ -1081,7 +1083,7 @@ FIN
  -- Funciones
  -- ------------------------------------------------
 
- #----------------------------------------
+#----------------------------------------
 #  function: selection decompress command
 #----------------------------------------
 fFirstCmd() {
@@ -1299,14 +1301,15 @@ fun_concatenate() {
     $ echo $A
     $ 900
 
-+ comando SPLIT este sirve para dividir archivo dependiendo del parametro que quiera el usuario
++ comando SPLIT. este sirve para dividir archivos dependiendo del parametro que quiera el usuario
 
 	SPLIT [opcion] [ archivo [prefijo_output]]
 
 
    + opciones 
     -l numero de lineas
-    -b tamaño de los archivos de salida (debe ser un múltiplo del sufijo: b 512, kB 1000, K 1024, MB 1000*1000, M 1024*1024, GB 1000*1000*1000, G 1024*1024*1024)
+    -b tamaño de los archivos de salida (debe ser un múltiplo del sufijo: b 512, kB 1000, K 1024, 
+    									MB 1000*1000, M 1024*1024, GB 1000*1000*1000, G 1024*1024*1024)
 
    dividir un archivo, en archivos de 15 lineas cada uno y que el nombre de los archivos creados tengan versionamiento numerico
 
@@ -1570,3 +1573,11 @@ Validar si un servidor esta disponible (system is reachable)
 	--spider : don't get, just check page availability
 	$? : shell return code
 	0 : shell "All OK" code
+
+
+	+Comando TREE. divide la salida mostrandola por consola pero tambien escribiendola en los archivos 
+					especificados
+
+		command | tree file.log
+
+		
