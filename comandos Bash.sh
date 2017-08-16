@@ -1393,6 +1393,7 @@ Comando CUT: ayuda a seprar cadenas de string o archivos completos <similar awk>
 	$ echo $H | cut -d';' -f2
 	como
 	$ echo $H | cut -d';' -f3
+	$ echo $H | cut -d \, -f3 -- otra alternativa usando '\'
 
 	MNO_INFO=`sqlplus -s acaadmin/acaadmin@osds<<EOF
   set pagesize 0 feedback off

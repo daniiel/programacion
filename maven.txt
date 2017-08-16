@@ -4,8 +4,6 @@
 
 ./run.sh -b 10.170.242.50 -c defaultDemo
 ./run.sh -b 10.170.242.50 -c defaultDev
-
-
 ./run.sh -b 10.170.242.50 -c optimaApp
 
 -- -------------------------
@@ -31,6 +29,12 @@
 -- Creacion de un Maven Project basico
 
 mvn archetype:generate -DgroupId=com.gemalto.optima.claro -DartifactId=claro-imei -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+
+
+6. Limpiar y descargar nuevamnete dependencias "IntelliJ"
+	mvn idea:clean
+	mvn idea:idea
+	
 
 	-- ------------------------------
 	-- Subir version de un proyecto
@@ -71,6 +75,8 @@ mvn archetype:generate -DgroupId=com.gemalto.optima.claro -DartifactId=claro-ime
   cd C:\Users\dbuitrag\Documents\NetBeansProjects\mercurial\
 
 3. colocar en DBManger 
+	pathProperties = "C:\\Users\\dbuitrag\\Documents\\sg-properties";
+	
 	pathProperties = "C:\\Users\\dbuitrag\\Documents\\programs\\server\\jboss-6.1.0.Final\\server\\default\\sg-properties";
 
 
@@ -136,8 +142,6 @@ ver el log de lo que se envio.
 
 se toma la traza y se pasa a un NotePadd++ y se a plugins/convert HEX -> ASCII
 
-593982548558
-
 
 //String pathProperties = "C:\\Users\\dbuitrag\\Documents\\programs\\server\\jboss-6.1.0.Final\\server\\default\\sg-properties";
 
@@ -145,7 +149,7 @@ se toma la traza y se pasa a un NotePadd++ y se a plugins/convert HEX -> ASCII
 how to change the language to SQL Developer
 ===========================================
 
-1. Add the followint statement to the file sqldeveloper.config in (sqlDevelper/bin)
+1. Add the following statement to the file sqldeveloper.config in (sqlDevelper/bin)
 
 	AddVMOption -Duser.language=en
 
@@ -153,10 +157,6 @@ ps eo pid,cmd|egrep "sqlplus|sqlldr" |grep -v grep
 
 
 netstat -nap 	saber el puerto y que preceso lo esta ocupando
-
-
-numero de orange 18098457482
-
 
 
 Servidor node

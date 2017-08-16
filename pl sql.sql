@@ -1259,8 +1259,6 @@ Definiendo tipos Collections
 	END;
 	/
 
-
-
 -- ----------------------------------------------------
 --  Crear ARRAYs and LOOP
 -- ----------------------------------------------------
@@ -1283,5 +1281,48 @@ BEGIN
     
   END LOOP;
 
+END;
+/
+
+
+CURSORES
+
+Paso implicito de parametros al cursor cur_mno
+
+DECLARE
+  cursor cur_ids is 
+    select id_mno from mno;
+    
+  v_id pls_integer;
+  v_name varchar2(50);
+  v_trigram varchar2(50);
+  
+  cursor cur_mno is 
+    select mno_name, trigram
+    from mno where id_mno = v_id;  
+BEGIN 
+  Open cur_ids;
+  loop
+  fetch cur_ids into v_id;
+  exit when cur_ids%NOTFOUND;
+    
+    -- Forma 1 usando FOR LOOP
+    for v_mnoId IN cur_mno loop
+      dbms_output.put_line('id: ' || v_id);
+      dbms_output.put_line('cursor: ' || v_mnoId.mno_name ||','|| v_mnoId.trigram);
+    end loop;
+    
+    -- Forma 2 usando OPEN, FETCH, CLOSE
+    open cur_mno;
+    loop
+    fetch cur_mno into v_name, v_trigram;
+    exit when cur_mno%NOTFOUND;
+      dbms_output.put_line('id: ' || v_id);
+      dbms_output.put_line('cursor: ' || v_name ||','|| v_trigram);
+    end loop;
+    close cur_mno;
+    
+  end loop;
+  close cur_ids;
 END;
 /

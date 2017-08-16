@@ -176,4 +176,10 @@ ORDER BY ind.owner,
   ind.table_owner,
   ind.table_name,
   ind.index_name,
-  col.column_position
+  col.column_position;
+  
+  
+-- saber si las estadisticas se estan lanzando 
+SELECT index_name, last_analyzed
+FROM dba_indexed
+WHERE table_owner=’nb_usuario’;
