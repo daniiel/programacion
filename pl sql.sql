@@ -1,6 +1,6 @@
 
 
-					PL/SQL ORACLE
+				PL/SQL ORACLE
 
 
 	. block is defined by the keywords: 
@@ -157,7 +157,7 @@
 		DECLARE
 			blood_type		CHAR DEFAULT 'O'; 		-- same as blood_type CHAR := 'O';
 			hours_worked	INTEGER DEFAULT 40;		-- typical value
-			employee_count	INTEGER := 0;			-- No ttypical value
+			employee_count	INTEGER := 0;			-- No typical value
 		BEGIN
 			NULL;
 		END;

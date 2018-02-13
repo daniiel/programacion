@@ -332,6 +332,10 @@ $
 	Eliminar primer espacio de cada fila
 	
 		sed -i 's/^ //g' archivo.xxx
+
+	Eliminar las líneas 2 a 7 del fichero
+  		
+  		 sed '2,7 d' fichero > fichero2
 	
 	Elimina lineas que contenga la palabra "cadena"
 	
@@ -719,12 +723,18 @@ COMMENT
 	custom/1F:4:070716_4_typ_15814_24057573768226375,typ_15814_24057573768226375,07-07-16 10:10,07-07-16 11:45,070716_4_typ_15814_24057573768226375.target,MT,1,1200
 
 
-
-	grep -rl "name"
+	- grep -rl "name"
 	
 	variaciones
 	 r la busqueda sea recursiva (busca dentro de los folder del directorio actual)
 	 n muestra el archivo donde la encontro y no la linea
+	
+
+	-- busca en el directorio actual el archivo donde aparece "como" y retorna el archivo en que lo encontro y la linea
+	$ grep -n "como" *
+	holatu.txt:3:como
+
+
 
 	 $ cat file
 	 gato 
@@ -881,6 +891,28 @@ FIN
 	12345678
 	12345678
 	12345678
+
+
+	+ NF - AWK
+
+	El siguiente codigo imprime una sola vez la cadena "lastname" seguido de la ultima columna de las lineas que contengan la palabra
+	"Peter".
+
+		awk 'BEGIN {print "lastname"} /Peter/ { print $NF}' awk.txt
+
+	Imprime el numero de campos que tiene las lineas que contienen la palabre "Petter"
+
+	awk 'BEGIN {print "lastname"} /Peter/ {print $NF}' awk.txt
+
+
+	- lee un archivo realizando las siguientes acciones:
+		1. define el separador ','
+		2. imprime una vez la palabra "option"
+		3. filtra todas las lineas que contienen la cadena '317'
+		4. imprime las columas 2 y 3
+
+	awk -F ',' 'BEGIN {print "option"} /317/ {print $2,$3}' colNumbers.txt
+
 
 + Conteo de registros unicos UNIQ. Para sacar los registros unicos de un archivo lo 
   primero que se debe tener es el archivo ordenado para eso se usa el comando SORT.
@@ -1581,4 +1613,38 @@ Validar si un servidor esta disponible (system is reachable)
 
 		command | tree file.log
 
-		
++ CHMOD command
+
+	x------------------------x-----------x
+	|chmod u=rwx,g=rwx,o=rx  | chmod 775 | 
+	|chmod u=rwx,g=rx,o=     | chmod 760 |
+	|chmod u=rw,g=r,o=r      | chmod 644 |
+	|chmod u=rw,g=r,o=       | chmod 640 |
+	|chmod u=rw,go=          | chmod 600 |
+	|chmod u=rwx,go=         | chmod 700 |
+	x------------------------x-----------x
+    
+  listar archivos por tamaño
+
+    ll -rS -> listar por tamaño de archivos (r invertir orden)
+    ll -t  -> fecha de modificacion
+
+
+
+ find . -name "*.bz2" | xargs -i -t bzcat {} | grep 992347843
+
+
+ -- ---------------------------
+ --  Procesos en 2do plano
+ -- ---------------------------
+
+ + ctrl + z : suspender el proceso
+
+	 $ xclock -d -update 1  
+	^Z
+	[1]+  Stopped                 xclock -d -update 1 
+
+
+	Nota: "[1]+ Stopped", el '1' del mensaje es un 'numero de tarea'. Se puede reiniciar el proceso
+		escribiendo 'fg %1'. Si se coloca solo 'fg' se reiniciara el proceso detenido mas recientemente.
+		Reiniciar un proceso con fg lo trae a primer plano.
