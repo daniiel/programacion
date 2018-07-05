@@ -2,7 +2,6 @@ PROGRAMACION EN BASH
    
    @AUTOR 	: DANIEL BUITRAGO
    @VERSION : v.4.8.3
-   			  < comando , 2da opcion de uso de un comando, cambio de forma >
 
 + short cuts
  
@@ -74,7 +73,7 @@ PROGRAMACION EN BASH
 		sentencia 3
 	fi
 
-	+ Sentencia IF en linea
++ Sentencia IF en linea
 	   
 	if [ 5 -gt 3 ]; then echo "verdad"; else echo "false"; fi
 	
@@ -89,7 +88,7 @@ PROGRAMACION EN BASH
 	
 + Comprobaciones 
 
-	- Comprobar si el archivo $1 existe sino comprueba si $2 existe
+	- Comprobar si el archivo $1 existe, sino, comprueba si $2 existe
 
 	if [ -e $1 ]; then 
 		echo "existe el archivo, pero no se valida si esta vacio o no"
@@ -171,7 +170,6 @@ $
 		if [ ! -d folder ] || [ ! "$(ls -A folder)" ]; then echo "no existe o esta vacio" ;fi
 
 
-
 + Variante comprobar si $1.* y todas sus posibles extensiones existes con ls y wc
 	
 	ls $1.* 2>/dev/null | wc -l 
@@ -193,7 +191,7 @@ $
 	
 + Manejo de PARAMETROS
 
-    $0	Contiene el nombre del script tal como es invocado (./file.sh)
+	$0	Contiene el nombre del script tal como es invocado (./file.sh)
 	$*	El conjunto de todos los parametros en un solo argumento
 	$#	Numero de parametros pasados al script
 	$?	codigo de retorno del ultimo comando
@@ -214,7 +212,7 @@ $
 
 	+ especificar tanto la salida como los errores al mismo archivo.
         
-        se hace con 2>&1
+            se hace con 2>&1
 	
 	+ Manejo de errores 2> . Redirige la salida de error a un 'archivo.log'
 
@@ -243,7 +241,7 @@ $
 	
 	if [ -e ] || [ $LINE -gt 5 ]
     
-    + Operadores Logicos
+    + Operadores Logicos (deprecated)
 
         -a (AND)
         exp1 -a exp2
@@ -253,7 +251,7 @@ $
 	
 + Comparar ultimos n caracteres de una cadena
 
-	if [ "${1:(-4)}" == ".bz2" ]; then
+    if [ "${1:(-4)}" == ".bz2" ]; then
         sentencia
     fi
 	
@@ -434,7 +432,6 @@ $
 
 	resultado : lib lib.zip
 
-
 	
 + Comando LS. Listar solo directorios y archivos con un formato especifico
 
@@ -498,7 +495,7 @@ $
 + Comando DATE. IMPORTANTE comillas raras (``)
 	
 	$ date
-    Mon Feb  9 14:26:26 BRST 2015
+	Mon Feb  9 14:26:26 BRST 2015
 	
 	DATE=`date +%Y-%m-%d_%T`
 	
@@ -517,11 +514,11 @@ $
 		2014-04-27
 														
 		IdDate=`date -d "$i day" +%Y%m%d`				[20140115]
-		Date=`date -d "$i day" +%F`						[2014-01-15]
-		Dateshort=`date +%d-%m-%y`						[15-01-14]	dia-mes-año
-		FullDateDesc=`date -d "$i day" +"%b %d,%Y"`		[Jan 15,2014]
-		Year=`date -d "$i day" +%Y`						[2014]
-		YearShort=`date +%y`							[14]
+		Date=`date -d "$i day" +%F`					[2014-01-15]
+		Dateshort=`date +%d-%m-%y`					[15-01-14]	dia-mes-año
+		FullDateDesc=`date -d "$i day" +"%b %d,%Y"`			[Jan 15,2014]
+		Year=`date -d "$i day" +%Y`					[2014]
+		YearShort=`date +%y`						[14]
 		MonthNum=`date -d "$i day" +%m`					[01]
 		MonthName=`date -d "$i day" +%B`				[January]
 		MonthShort=`date -d "$i day" +%b`				[Jan]
@@ -570,9 +567,9 @@ $
 
 	let var=13
 	
-+ Operaciones matematicas 
++ Comando BC. Operaciones matematicas 
 	
-	echo  20/3|bc				=> 6		# division entera
+	echo  20/3|bc			=> 6		# division entera
 	echo "scale=1; 20/3" |bc	=> 6.6		# punto flotante
 	echo "scale=1; 20/3*5" |bc	=> 33.0		# '/' tiene mayor precedencia que '*'
 	
@@ -582,7 +579,7 @@ $
 	find -mtime 2 -name '*.bad' -o -mtime 2 -name '*.bad'
 	find /mnt/nas_aca_2/tbcaca/tmp/ -mtime 2
 	
-	+alternativa -iname case sensitive
+	+ alternativa -iname case sensitive
 	
         list2=$(find -mtime 2 -name '*.bad' -o -name '*.bad')
  
@@ -735,7 +732,6 @@ COMMENT
 	holatu.txt:3:como
 
 
-
 	 $ cat file
 	 gato 
 	 perro 
@@ -854,7 +850,7 @@ FIN
 	
 		awk expresion {accion}
 		
-		+ Comandos
+	+ Comandos
 		  $0	mostrar la linea completas
 		  $1 .. $n	mostrar las columnas especificadas
 		  FS	definir separador ( valores por defecto son ESPACIO o TAB)
@@ -871,7 +867,7 @@ FIN
 	+ Usar variables globales con '-v' y doble impresion dentro del cuerpo del AWK.
 
 	let vPrefix=57
-	cat datos.csv  |awk -F"," -v vPrefix=$vPrefix -v var2=$val2'{ if( substr($1,0,2) == vPrefix ) print "true"; else print "false" }{ print vPrefix}'
+	cat datos.csv  | awk -F"," -v vPrefix=$vPrefix -v var2=$val2'{ if( substr($1,0,2) == vPrefix ) print "true"; else print "false" }{ print vPrefix}'
 		
 	+ Eliminar columna 2. [ Problema: se pierden los separadores]
 		
@@ -893,14 +889,14 @@ FIN
 	12345678
 
 
-	+ NF - AWK
+	+ AWK - NF
 
 	El siguiente codigo imprime una sola vez la cadena "lastname" seguido de la ultima columna de las lineas que contengan la palabra
 	"Peter".
 
 		awk 'BEGIN {print "lastname"} /Peter/ { print $NF}' awk.txt
 
-	Imprime el numero de campos que tiene las lineas que contienen la palabre "Petter"
+	Imprime el numero de campos que tiene las lineas que contienen la palabra "Petter"
 
 	awk 'BEGIN {print "lastname"} /Peter/ {print $NF}' awk.txt
 
@@ -912,7 +908,10 @@ FIN
 		4. imprime las columas 2 y 3
 
 	awk -F ',' 'BEGIN {print "option"} /317/ {print $2,$3}' colNumbers.txt
-
+	
+	- AWK - filtrando registros, sumando el valor de la column 10 del archivo
+	
+		awk '$1 == "2018-07-04" && $2 >= "15:30:00" {sum+=$10} END {print sum}' file.txt
 
 + Conteo de registros unicos UNIQ. Para sacar los registros unicos de un archivo lo 
   primero que se debe tener es el archivo ordenado para eso se usa el comando SORT.
@@ -950,8 +949,6 @@ FIN
 	$ du -sh tmp
 	1.8G    tmp
 
-
-  
 	+ variacion con el comando LS
 	
 	ls -lh file -> -rw-rw-r--   1 user   xx          12M Feb  6 15:34 file
@@ -961,13 +958,13 @@ FIN
 	+ Comando BASENAME. devuelve el nombre de un archivo o carpeta de un path
 
 		$ basename /home/user/hola.txt	-> hola.txt
-		$ basename /home/user/			-> user
+		$ basename /home/user/		-> user
 
 	+ Comando dirname. devuelve el path del archivo
 
 		$ dirname /home/user/hola.txt 	-> /home/user
 
-	+ extarer nombre, extension de una ruta
+	+ extraer nombre, extension de una ruta
 
 		fullfile=/home/aca/lista34_sas.txt
 
@@ -1227,8 +1224,8 @@ fun_concatenate() {
 	$ cat salidaErr
 	hola
 	rm: cannot remove 'dada.csv': No such file or directory
-    
-   + Aprovisionar KEY en un servidor
+
++ Aprovisionar KEY en un servidor
    
    - en el servidor 
    $ pwd 
@@ -1239,7 +1236,7 @@ fun_concatenate() {
    $ touch authorized_keys; chmod 600 authorized_keys
    (modificar el archivo y colocar la key)
    
-   + Crear un Alias
++ Crear un Alias
    
    $ pwd
    /home/gxs
@@ -1247,13 +1244,13 @@ fun_concatenate() {
    $ vi .bash
    alias cmoaca="ssh cmoaca@200.186.92.67 -p 23522 -i /home/gxs/.ssh/ckey"
 
-   + Usar los ALIAS dentro de un script
++ Usar los ALIAS dentro de un script
 
     . ~/.bashrc
 	shopt -s expand_aliases
    
    
-   + Crear un for para invocar un script pasandole la fecha 
++ Crear un for para invocar un script pasandole la fecha 
    
    for i in {31..70}
    do
@@ -1311,7 +1308,7 @@ fun_concatenate() {
 	64
 
 
-+ remover la extesion de un archivo
++ remover la extesion de un archivo (extension conocida)
 	
 	$ basename campanha_2015.target	.target
 	$ campanha_2015
@@ -1341,7 +1338,7 @@ fun_concatenate() {
    + opciones 
     -l numero de lineas
     -b tamaño de los archivos de salida (debe ser un múltiplo del sufijo: b 512, kB 1000, K 1024, 
-    									MB 1000*1000, M 1024*1024, GB 1000*1000*1000, G 1024*1024*1024)
+    					MB 1000*1000, M 1024*1024, GB 1000*1000*1000, G 1024*1024*1024)
 
    dividir un archivo, en archivos de 15 lineas cada uno y que el nombre de los archivos creados tengan versionamiento numerico
 
@@ -1417,7 +1414,7 @@ else
 fi
 
 
-Comando CUT: ayuda a seprar cadenas de string o archivos completos <similar awk> y ocultar columnas
+Comando CUT: ayuda a separar cadenas de string o archivos completos <similar awk> y ocultar columnas
 
 	H="hola;como;estas"
 	echo $H | cut -d';' -f1
@@ -1426,6 +1423,7 @@ Comando CUT: ayuda a seprar cadenas de string o archivos completos <similar awk>
 	como
 	$ echo $H | cut -d';' -f3
 	$ echo $H | cut -d \, -f3 -- otra alternativa usando '\'
+
 
 	MNO_INFO=`sqlplus -s acaadmin/acaadmin@osds<<EOF
   set pagesize 0 feedback off
@@ -1443,8 +1441,6 @@ Para solucionar esto, es necesario cambiar el directorio temporal a uno de mayor
 Sort --temporary-directory=DIR archivo -> donde DIR sera la partición con mayor capacidad
 
 
-
-
 - Comando XARGS. Cuando corre xargs, este corre comandos una vez para cada palabra pasada a este
 	por standar input.
 
@@ -1453,12 +1449,12 @@ Sort --temporary-directory=DIR archivo -> donde DIR sera la partición con mayor
 		. la primera parte encuentra todos los archivos in el actual directorio o subdirectorios
 		. esta lista es entonces pasada a xargs, cual añade a cada entrada su propio comando rm
 		 	Nota:   los problemas pueden aparecer si el nombre de los archivos contienen espacios
-		 			ya que por defecto xargs usa ambos, spacios y nueva linea (salto de linea) como
-		 			delimitadores.
+		 		ya que por defecto xargs usa ambos, spacios y nueva linea (salto de linea) como
+		 		delimitadores.
 
 		 	option
 		 		-d "\n" le dice a xargs usar solo nueva linea como delimitador. El comando find separa 
-		 				cada nombre de archivo encontrado con un salto de linea.
+		 		cada nombre de archivo encontrado con un salto de linea.
 
 	- borrar los archivos del directorio
 	$ ls | xargs rm -rf 
@@ -1481,8 +1477,6 @@ Sort --temporary-directory=DIR archivo -> donde DIR sera la partición con mayor
 
 		    23  n
 		    24  n
-
-		.
 
 -- crea un alias para el ls para que los archivos y directorios se muestren en color
 
@@ -1608,7 +1602,7 @@ Validar si un servidor esta disponible (system is reachable)
 	0 : shell "All OK" code
 
 
-	+Comando TREE. divide la salida mostrandola por consola pero tambien escribiendola en los archivos 
+	+ Comando TREE. divide la salida mostrandola por consola pero tambien escribiendola en los archivos 
 					especificados
 
 		command | tree file.log
@@ -1628,7 +1622,6 @@ Validar si un servidor esta disponible (system is reachable)
 
     ll -rS -> listar por tamaño de archivos (r invertir orden)
     ll -t  -> fecha de modificacion
-
 
 
  find . -name "*.bz2" | xargs -i -t bzcat {} | grep 992347843
