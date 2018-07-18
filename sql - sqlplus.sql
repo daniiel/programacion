@@ -1,10 +1,9 @@
-ORACLE, SQL*PLUS, PL/SQL 
+SQL*PLUS, PL/SQL 
 
-	@AUTOR 		: DANIEL BUITRAGO
+    @AUTOR 		: DANIEL BUITRAGO
     @VERSION 	: v.3.2.0
-    			< comando , 2da opcion de uso de un comando, cambio de forma >
 
-mostrar todo los comandos de SQL*Plus 
++ Mostrar todos los comandos de SQL*Plus 
 	
 	SQL> help index;
 
@@ -124,16 +123,13 @@ mostrar todo los comandos de SQL*Plus
 	
 		select <sequence_name>.currval from dual;
 	
-	- Aumnetar el valor de la sequence 
+	- Aumentar el valor de la sequencia 
 	
 		select <sequence_name>.nextval from dual;
 		
-+ Modificar el valor de incremento de una SEQUENCE, el valor puede ser tanto positivo
-  como negativo.
++ Modificar el valor de incremento de una SEQUENCE, el valor puede ser tanto positivo como negativo.
 
 	Alter sequence sequence_name increment by #;
-
-	
 	
 + TRIGGER
 
@@ -172,7 +168,7 @@ mostrar todo los comandos de SQL*Plus
 		SHOW ERRORS 
 
 -- Consultar triggers
-	select trigger_name as name , trigger_type as type,triggering_event as event, table_name, 
+	select trigger_name as name , trigger_type as type, triggering_event as event, table_name, 
 	status from ALL_TRIGGERS;
 
 -- dehabilitar Trigger
@@ -186,7 +182,7 @@ mostrar todo los comandos de SQL*Plus
 	WHERE OWNER = USER AND TYPE IN ('PROCEDURE','FUNCTION')ORDER BY 2;
 
 -- Ver codigo fuente de un procedimiento
-	select text from user_source where type='PROCEDURE'and name='<PROCEDURE>';
+	select text from user_source where type = 'PROCEDURE'and name = '<PROCEDURE>';
 
 + Cambiar formato a la fecha del sistema DATE.
 
@@ -199,13 +195,13 @@ mostrar todo los comandos de SQL*Plus
 
 + Guardar consulta en una variable bash
 
-	MNO_NAME=`sqlplus -s acaadmin/acaadmin@osds<<FIN
+	MNO_NAME=`sqlplus -s username/password@sid<<EOF
 		set pagesize 0 feedback off
 		select mno_name from mno where id_mno = $ID_MNO;
-		FIN`
+	EOF`
 	MNO_NAME=`echo -n $MNO_NAME`
 	
-+ Cargar archivos externos usando SQL-LOADER.
++ Cargar archivos usando SQL-LOADER.
 
   Oracle ofrece la posibilidad de cargar archivos a la base de datos mediante SQL-LOADER,
   que lo que hace es crear un archivo con extension .ctl que especifica la forma de cargar
@@ -226,12 +222,12 @@ mostrar todo los comandos de SQL*Plus
 	FIELDS TERMINATED BY "," OPTIONALLY ENCLOSED BY '"'
 	TRAILING NULLCOLS
 	(
-	 ID_MNO CONSTANT 1,
+	 MO CONSTANT 1,
 	 id_provider EXPRESSION "(SELECT id_provider FROM provider WHERE lower(provider_name) = LOWER(:cp))",
 	 ID_CAMPAIGN EXPRESSION "st_id_campaign.nextval",
      CAMPAIGN_NAME,
-     SCENARIO_NAME BOUNDFILLER CHAR,
-     ID_SCENARIO EXPRESSION "(SELECT DISTINCT ID_SCENARIO FROM SCENARIO S INNER JOIN RCA R ON (S.ID_RCA=R.ID_RCA) INNER JOIN OTA O ON (R.ID_OTA=O.ID_OTA) WHERE SCENARIO_NAME=:SCENARIO_NAME AND ID_MNO=_ID_MNO_)",
+     SCENARIO BOUNDFILLER CHAR,
+     IDSCENARIO EXPRESSION "(SELECT DISTINCT ID_SCENARIO FROM SCENARIO S INNER JOIN RCA R ON (S.ID_RCA=R.ID_RCA) INNER JOIN OTA O ON (R.ID_OTA=O.ID_OTA) WHERE SCENARIO_NAME=:SCENARIO_NAME AND ID_MNO=_ID_MNO_)",
      CSTART_DATE BOUNDFILLER CHAR,
      START_DATE EXPRESSION "to_date(:CSTART_DATE,'DD-MM-YY HH24:MI')",
      CEND_DATE BOUNDFILLER CHAR,
@@ -239,8 +235,6 @@ mostrar todo los comandos de SQL*Plus
      BASE_NAME BOUNDFILLER CHAR,
      BASE_ID_LIST EXPRESSION "(SELECT ID_LIST from LIST WHERE ID_MNO=_ID_MNO_ AND LIST_NAME=:BASE_NAME and type_list = 'white list')",
      SMSC_MODE "NVL(:SMSC_MODE,10)",
-     VALIDITY_PERIOD,
-     TARGET_SIZE,
      OPT_LIST_MAND_TARGETS BOUNDFILLER CHAR,
      MANDATORY_ID_LIST EXPRESSION "(SELECT ID_LIST from LIST WHERE ID_MNO=_ID_MNO_ AND LIST_NAME=:OPT_LIST_MAND_TARGETS and type_list = 'white list')",
      TRANS_DATE TIMESTAMP  "YYYYMMDD HH24:MI:SS"
@@ -274,7 +268,6 @@ mostrar todo los comandos de SQL*Plus
 	TRAILING NULLCOLS
 	( times timestamp "YYYYMMDD HH24:MI" )
 
-
 		20150701 08:03
 		20150701 08:02
 		20150701 15:03
@@ -282,17 +275,17 @@ mostrar todo los comandos de SQL*Plus
 		 
 	+ Comando para ejecutar, 'sin necesidad de inicar el sqlplus'
 		
-		$FILE=archivo.ctl
+		FILE=archivo.ctl
 		
-		sqlldr acaadmin/acaadmin@osds control=archivo.ctl log=archivo.log
-		sqlldr acaadmin/acaadmin@osds control=$FILE log=${FILE/.ctl/.log}
+		sqlldr username/passwd@sid control=archivo.ctl log=archivo.log
+		sqlldr username/passwd@sid control=$FILE log=${FILE/.ctl/.log}
 		
 		si se omite el log=archivo.log, sqlldr lo creara por defecto con el mismo nombre del
 		archivo ctl en la ruta donde este ejecutada la setencia.
 		
 + Manejo de Tablespace
 
-	# Asiganar un tablespace a una tabla en la creacion
+	# Asignar un tablespace a una tabla en la creacion
 	
 		CREATE TABLE table_name (
 			atributos,
@@ -304,7 +297,7 @@ mostrar todo los comandos de SQL*Plus
 	
 		ALTER TABLE table_name MOVE TABLESPACE tablespace_name ;
 		
-+ Manipular Columnas
++ Manipular columnas
 	
 	# Añadir columnas
 		ALTER TABLE <table_name> ADD <column> <type_data()>;
@@ -336,7 +329,8 @@ mostrar todo los comandos de SQL*Plus
 
 + Crear una tabla usando el schema de otra
 	
-	create table <table_name> as (select * from <table_name_original>);
+	create table <table_name> as (select * from <table_name_original> where 1 = 0);
+		-- si se usa el 'where 1 = 0' no hay necesidad de truncar la tabla
 	truncate table <table_name>; -- elimina los datos que quedaron de la tabla original
 	
 + Truncar tabla
@@ -538,7 +532,7 @@ set serveroutput On size 20000 activa la impresion por consola a maximo 20000 by
 set define off deshabilita el uso del comando '&' para definir variables. Esto sirve para pdoer hacer busquedas que contengan el caracter '&'
 
 -- Exportar consultas a un CSV SQL*PLUS
-sqlplus -s acaadmin/acaadmin@osds<<FIN 1>/dev/null
+sqlplus -s username/passwd@sid<<FIN 1>/dev/null
 	set heading off  feedback off  pagesize 0  numw 15
 	SPOOL /PROCESSING/segmentation/praaca/lists/tmp/suceeded_msisdn.csv CREATE/APPEND
 	select msisdn from campaign_fact c,state_dim s where id_mno = 4 and s.id_state = c.id_state and s.state = 'SUCCEEDED' and id_date between 20130315 and 20140404;
@@ -937,7 +931,7 @@ los [] se pueden cambiar por dos caracteres distintos {}, <>, (), etc..
 
  + acceder a la db desde otra VM (IBM).
 
- 	sqlplus acaadmin/acaadmin@10.170.240.17:1525/osds
+ 	sqlplus username/passwd@10.170.240.17:1525/sid
 
  -- ---------------------------
  -- Parametros database
@@ -1390,21 +1384,16 @@ END;
 
 + Uso del comando RANK.
 
-[OSP server]
-
 Solo es reemplazar ## por el id de la lista 
 
-Sqlplus acaadmin/acaadmin@osds
-
-select state,count(*) 
+sql> select state,count(*) 
 from (
    select msisdn,state, rank() over (partition by msisdn order by id_date desc)  "RANK"
    from campaign_fact cf, state_dim sd
    where cf.id_state = sd.id_state and cf.id_mno=6 and cf.id_campaign in (select id_campaign from campaign where base_id_list = ##) 
 where RANK = 1 group by state ;  
 
-
-
+	
 SQL> create table bowie (id number, code number, name varchar2(42));
  
 Table created.
@@ -1418,13 +1407,9 @@ SELECT column_name ||' : '|| comments
 FROM user_col_comments
 WHERE table_name='CEE_TARGET';
 
-
-
 SELECT 'comment on column '||table_name||'.'||column_name||' is '''||comments||''';'
 FROM user_col_comments
 WHERE comments is not null;
-
-
 
 DELETE
 FROM campaign
@@ -1457,7 +1442,7 @@ SQL Error: ORA-08102: index key not found, obj# 471147, file 280, block 2482795 
 	/
 
 
-	+ Configurar el SERVEROUTPUT by default?
++ Configurar el SERVEROUTPUT by default?
 
 	Open a new worksheet.
 
