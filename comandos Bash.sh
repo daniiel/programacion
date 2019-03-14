@@ -113,6 +113,7 @@ PROGRAMACION EN BASH
 	
 	if [ ! -z $var ]; then echo "hola mundo"; fi
 	
+	+ Eslas validaciones son llamadas en bash -> "primaries" (probably because this is a common term used when discussing parts of a boolean expression)
 
 	variaciones:
 		-s fichero existe y no esta vacio
@@ -127,6 +128,10 @@ PROGRAMACION EN BASH
 			A="algo"
 			if [ -z $A ]; then echo "vacio"; else echo "llena";fi
 			variable vacia = TRUE
+		-n evalua a TRUE si el string no esta vacio (la variable DEBE estar entre comillas)
+			A="algo"
+			if [ -n "$A" ]; then echo "lleno"; else echo "vacio"; fi
+			# lleno
 
 
 $ BL_ID_LIST=`sqlplus -s acaadmin/acaadmin@osds<<EOF
