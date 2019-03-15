@@ -1646,3 +1646,30 @@ Validar si un servidor esta disponible (system is reachable)
 	Nota: "[1]+ Stopped", el '1' del mensaje es un 'numero de tarea'. Se puede reiniciar el proceso
 		escribiendo 'fg %1'. Si se coloca solo 'fg' se reiniciara el proceso detenido mas recientemente.
 		Reiniciar un proceso con fg lo trae a primer plano.
+		
+	Comando XARGS.
+	
+	- Permite la ejecucion de un comando para la salida estandar.
+	
+	. elimina los archivos listados
+	$ ls | xargs rm -f 
+	
+	. para indicar la posicion de donde se quiere usar los argumentos que le estan llegando se usa la opcion
+		-I para definirla
+		
+		$ cat *.jon | grep "id" | cut -d '"' -f4 | xargs -I {} bash echo "/home/user/"{}
+		$ cat *.jon | grep "id" | cut -d '"' -f4 | xargs -I {} bash echo "El id: "{} " esta corrupto"
+		
+	. Para invocar una funcion creada por nosotros y pasarle los argumentos, se necesita primero exportar 
+		la funcion para que xargs la pueda reconocer.
+		
+		imprimir() {
+        	echo "Id: "$1
+		}
+		
+		export -f imprimir
+		cat *.json | grep '"id": ' | cut -d '"' -f4 | xargs -I {} bash -c 'imprimir "$@"' _ {}
+		
+		
+
+	
