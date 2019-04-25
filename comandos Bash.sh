@@ -1,8 +1,39 @@
 PROGRAMACION EN BASH 
    
    @AUTOR 	: DANIEL BUITRAGO
-   @VERSION : v.4.8.3
+   @VERSION : v.4.9
 
++ I/O redireccion
+  
+  Hay 2 salidas estandar: 
+  
+    . standard output (stdout) file descriptors (1)
+    . standard error  (stderr) file descriptors (2)
+
+   - Redirigir la salida de un comando a NULL, sin afectar la salida de error
+   	$ cat file.txt > /dev/null
+   	
+	$ cat file.tx > /dev/null
+	cat: file.tx No such file or directory
+	
+   - Usando file descriptors, para redirigir la salida de error a un archivo error
+   
+   	$ cat file.tx 2> errot.txt
+    
+    - Significado de 2>&1.
+    
+        Esto basicamente traduce "Redirija a salida de error (stderr) al mismo lugar
+        que esta redirigiendo la salida estandar (stdout).
+        
+        $ cat file.txt > output.txt 2>&1
+        $ cat output.txt
+        foo
+        bar
+        
+        $ cat file.tx > output.txt 2>&1
+        $cat output.txt
+        cat: file.tx No such file or directory
+	
 + short cuts
  
    ctrl + s  	scroll lock
