@@ -1702,5 +1702,25 @@ Validar si un servidor esta disponible (system is reachable)
 		cat *.json | grep '"id": ' | cut -d '"' -f4 | xargs -I {} bash -c 'imprimir "$@"' _ {}
 		
 		
-
+	GETOPTS Commnad
+	
+	- Para definir si un parametro incluye un argumento o no, se puede ver en el siguiente ejemplo:
+	
+		-v Habilita verbose mode
+		-f <filename> Especifica el nombre del archivo de salida
+		
+		la configuracion quedaria:
+			
+			vf:
+			
+		- la opcion "v" no tiene (:) xq este no incluye argumentos
+		- por otro lado "f" tiene (:) que significa que requiere un argumento
+		
+		./script.sh -f outputfile.txt
+		
+		./script.sh -v -f file.txt
+		
+			
+		
+	
 	
