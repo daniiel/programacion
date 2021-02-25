@@ -1,4 +1,4 @@
-PROGRAMACION EN BASH 
+SHELL SCRIPTING
    
    @AUTOR 	: DANIEL BUITRAGO
    @VERSION : v.4.9
@@ -178,10 +178,8 @@ $ echo $BL_ID_LIST
 $ if [ "$BL_ID_LIST" == "40043" ]; then echo "igual"; fi
 $
 $ BL_ID_LIST=`echo -n $BL_ID_LIST`
-
 $ if [ "$BL_ID_LIST" == "40043" ]; then echo "igual"; fi
 igual
-$
 
 
 + validaciones parametros - fecha yyyy-mm-dd
@@ -258,17 +256,17 @@ $
 	
 	    cat file.csv | awk -F'|' '{print $1}' > column1.csv 2>/dev/null
 
-+ Validaciones de cantidad de parametros recibidos y salir del script inmediatamente si no lo correctos
++ Validaciones de cantidad de parametros recibidos, si no corresponde se sale del script.
 
 	if [ $# == 0 ]; then
-		echo 'no hay parametros'
-		exit
+	    echo 'no hay parametros'
+	    exit
 	fi
 	
 + Comprobar si el archivo NO existe
 
 	if [ ! -e $1 ]; then 
-		echo "el archivo $1 no existe"
+	    echo "el archivo $1 no existe"
 	fi
 	
 + Operaciones logicas AND, OR 
@@ -308,18 +306,18 @@ $
 + Funcion con retorno
 
 	function suma(){
-		c=$(expr $1 + $2)
-		return $c
+	    c=$(expr $1 + $2)
+	    return $c
 	}
 	
 	fPath() {
-        echo "22" 
+            echo "22" 
 	}
 	
 	if [ `fPath` -eq "22" ]; then
-        echo "devolvio 22"
+            echo "devolvio 22"
 	else
-        echo "devolvio 0"
+            echo "devolvio 0"
 	fi
 
 + Manejo de Cadenas
@@ -391,9 +389,8 @@ $
         
         + eliminar cualquier cosa que no sea numerico
         
-        sed 's/[^0-9]//g'
-        
-        34er23  -> 3423
+            sed 's/[^0-9]//g'
+            34er23  -> 3423
 		
 	Reemplazar cadena1 por cadena2
 	
@@ -401,16 +398,16 @@ $
 		
 	Eliminar lineas vacias
 	
-		sed -i '/^$/d' archivo.xxx
+	    sed -i '/^$/d' archivo.xxx
 	
 	Eliminar comilla simple 
 		
-		sed -i "s/'//g" archivo.xxx
+	    sed -i "s/'//g" archivo.xxx
 		
 	
 	varios sed en la misma linea
 
-	sed "s:_DATE_:$DESIRED_DATE:g; s:_ID_MNO_:$ID_MNO:g;" file.txt
+	    sed "s:_DATE_:$DESIRED_DATE:g; s:_ID_MNO_:$ID_MNO:g;" file.txt
 	
 	variaciones
 	
@@ -418,12 +415,11 @@ $
 
 	uso de SED en templates
 	
-	sed s:_INFILE_:$TMP_CSV_FROM_XML:g $CAMPAIGN_FACT_CTL_TEMPLATE > $TMP_CAMPAIGN_FACT_CTL
+	    sed s:_INFILE_:$TMP_CSV_FROM_XML:g $CAMPAIGN_FACT_CTL_TEMPLATE > $TMP_CAMPAIGN_FACT_CTL
 
-	sqlldr acaadmin/acaadmin@osds control=$TMP_CAMPAIGN_FACT_CTL log=${TMP_CAMPAIGN_FACT_CTL/.ctl/.log}
+	    sqlldr acaadmin/acaadmin@osds control=$TMP_CAMPAIGN_FACT_CTL log=${TMP_CAMPAIGN_FACT_CTL/.ctl/.log}
 
-	sed -r 's/;([^n][^o][^n][^e][^;])/g'
-
+	    sed -r 's/;([^n][^o][^n][^e][^;])/g'
 
 	+ imprimir resultados CTL
 
@@ -432,10 +428,9 @@ $
 	echo -e "\e[0;32m     `cat ${TMP_CTL/.ctl/.log} | grep "Rows successfully"` \e[0m"
 	echo -e "\e[0;31m     `cat ${TMP_CTL/.ctl/.log} | grep "Rows not loaded due"` \e[0m"
 
-+ Comando TR. Elimina los espacios, tabulaciones , lineas vacias..
++ Comando TR. Elimina los espacios, tabulaciones, lineas vacias.
 
 	cat file | tr -d ' \t\r\f' 
-
 		
 + Comprimir y descomprimir archivos [ gzip comprime mas en archivos csv ]
 
